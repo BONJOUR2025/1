@@ -86,7 +86,7 @@ export default function Employees() {
           onChange={(e) => setFilterPhone(e.target.value)}
         />
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-xl flex items-center gap-1"
+          className="bg-purple-600 text-white px-4 py-2 rounded-xl flex items-center gap-1"
           onClick={startCreate}
         >
           <UserPlus size={16} /> Добавить сотрудника
