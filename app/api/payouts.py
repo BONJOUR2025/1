@@ -6,9 +6,12 @@ from typing import Optional
 from app.schemas.payout import Payout, PayoutCreate, PayoutUpdate
 from app.services.payout_service import PayoutService
 
+__all__ = ["router", "init_payout_routes"]
 
-def create_payout_router(service: PayoutService) -> APIRouter:
-    router = APIRouter(prefix="/payouts", tags=["Payouts"])
+router = APIRouter(tags=["Payouts"])
+
+
+def init_payout_routes(service: PayoutService) -> None:
 
     @router.get("/", response_model=list[Payout])
     async def list_payouts(
@@ -85,4 +88,4 @@ def create_payout_router(service: PayoutService) -> APIRouter:
             return FileResponse(Path(path), filename=Path(path).name)
         raise HTTPException(status_code=404, detail="No data")
 
-    return router
+

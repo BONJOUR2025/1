@@ -9,7 +9,7 @@ from ..core.application import create_application
 from .employees import create_employee_router
 from .salary import create_salary_router
 from .schedule import create_schedule_router
-from .payouts import create_payout_router
+from .payouts import router as payouts_router, init_payout_routes
 from .birthdays import create_birthdays_router
 from .telegram import create_telegram_router
 from ..services.employee_service import EmployeeService, EmployeeAPIService
@@ -70,7 +70,8 @@ def create_app() -> FastAPI:
 
     telegram_service = TelegramService(employee_service._repo)
     payout_service = PayoutService(telegram_service=telegram_service)
-    app.include_router(create_payout_router(payout_service), prefix="/api")
+    init_payout_routes(payout_service)
+    app.include_router(payouts_router, prefix="/api/payouts")
 
     birthday_service = BirthdayService(employee_service._repo)
     app.include_router(
