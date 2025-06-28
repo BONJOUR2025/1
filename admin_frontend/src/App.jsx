@@ -5,6 +5,7 @@ import Reports from './pages/Reports';
 import Birthdays from './pages/Birthdays';
 import Broadcast from './pages/Broadcast';
 import Analytics from './pages/Analytics';
+import Vacations from './pages/Vacations';
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <nav className="flex flex-wrap gap-2 mb-4 bg-white p-3 rounded shadow">
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/employees">Сотрудники</Link>
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/payouts">Выплаты</Link>
+          <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/vacations">Отпуска</Link>
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/reports">Отчёты</Link>
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/birthdays">Дни рождения</Link>
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/broadcast">Рассылка</Link>
@@ -24,6 +26,7 @@ export default function App() {
           <Route path="/admin/reports" element={<Reports />} />
           <Route path="/admin/birthdays" element={<Birthdays />} />
           <Route path="/admin/broadcast" element={<Broadcast />} />
+          <Route path="/admin/vacations" element={<Vacations />} />
           <Route path="/admin/analytics" element={<Analytics />} />
           <Route path="*" element={<Navigate to="/admin/employees" replace />} />
         </Routes>

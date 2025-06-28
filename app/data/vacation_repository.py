@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import date, timedelta
 from typing import List, Dict, Any, Optional
 
 from app.config import VACATIONS_FILE
@@ -66,8 +67,26 @@ class VacationRepository:
         self._counter += 1
         return self._counter
 
-    def list(self) -> List[Dict[str, Any]]:
-        return list(self._data)
+    def list(
+        self,
+        employee_id: Optional[str] = None,
+        vac_type: Optional[str] = None,
+        date_from: Optional[str] = None,
+        date_to: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
+        result = []
+        for item in self._data:
+            if employee_id and str(item.get("employee_id")) != str(employee_id):
+                continue
+            if vac_type and item.get("type") != vac_type:
+                continue
+            if date_from and str(item.get("start_date")) < date_from:
+                continue
+            if date_to and str(item.get("end_date")) > date_to:
+                continue
+            result.append(item)
+        result.sort(key=lambda v: v.get("start_date", ""))
+        return result
 
     def create(self, data: Dict[str, Any]) -> Dict[str, Any]:
         if "id" not in data or any(
@@ -90,3 +109,19 @@ class VacationRepository:
     def delete(self, vac_id: str) -> None:
         self._data = [v for v in self._data if str(v.get("id")) != str(vac_id)]
         self._save()
+
+    def list_active(self) -> List[Dict[str, Any]]:
+        today = date.today().isoformat()
+        active = [
+            v
+            for v in self._data
+            if str(v.get("start_date")) <= today <= str(v.get("end_date"))
+        ]
+        active.sort(key=lambda v: v.get("start_date", ""))
+        return active
+
+    def list_tomorrow(self) -> List[Dict[str, Any]]:
+        tomorrow = (date.today() + timedelta(days=1)).isoformat()
+        reminder = [v for v in self._data if str(v.get("start_date")) == tomorrow]
+        reminder.sort(key=lambda v: v.get("start_date", ""))
+        return reminder
