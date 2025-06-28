@@ -120,8 +120,13 @@ export default function Payouts() {
         payout_type: filters.type || undefined,
         status: filters.status || undefined,
         method: filters.method || undefined,
-        from_date: filters.from || undefined,
-        to_date: filters.to || undefined,
+        m23v04-codex/fix-синтаксические-ошибки-в-файле-birthdays.jsx
+        date_from: filters.from || undefined,
+        date_to: filters.to || undefined,
+
+        date_from: filters.from || undefined,
+        date_to: filters.to || undefined,
+        main
       };
       const res = await api.get('payouts/', { params });
       let list = res.data;
@@ -221,8 +226,13 @@ export default function Payouts() {
       payout_type: filters.type,
       status: filters.status,
       method: filters.method,
-      from_date: filters.from,
-      to_date: filters.to,
+       m23v04-codex/fix-синтаксические-ошибки-в-файле-birthdays.jsx
+      date_from: filters.from,
+      date_to: filters.to,
+
+      date_from: filters.from,
+      date_to: filters.to,
+       main
     });
     window.open(`/api/payouts/export.pdf?${q.toString()}`, '_blank');
   }
