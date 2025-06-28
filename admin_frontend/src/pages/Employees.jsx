@@ -7,31 +7,16 @@ import {
   FileDown,
 } from 'lucide-react';
 import api from '../api';
+import EmployeeForm from '../components/EmployeeForm';
 
 export default function Employees() {
-  const emptyForm = {
-    id: '',
-    name: '',
-    full_name: '',
-    phone: '',
-    card_number: '',
-    bank: '',
-    birthdate: '',
-    note: '',
-    status: 'active',
-    position: '',
-    is_admin: false,
-    sync_to_bot: false,
-    photo_file: null,
-    photo_url: '',
-  };
-
   const [employees, setEmployees] = useState([]);
   const [filterName, setFilterName] = useState('');
   const [filterPhone, setFilterPhone] = useState('');
   const [selected, setSelected] = useState([]);
-  const [form, setForm] = useState(emptyForm);
   const [showForm, setShowForm] = useState(false);
+  const [formMode, setFormMode] = useState('create');
+  const [current, setCurrent] = useState(null);
 
   useEffect(() => {
     load();
@@ -52,12 +37,14 @@ export default function Employees() {
   }
 
   function startCreate() {
-    setForm(emptyForm);
+    setFormMode('create');
+    setCurrent(null);
     setShowForm(true);
   }
 
   function startEdit(emp) {
-    setForm({ ...emp, id: emp.id });
+    setFormMode('edit');
+    setCurrent(emp);
     setShowForm(true);
   }
 
@@ -75,50 +62,6 @@ export default function Employees() {
     load();
   }
 
-  async function saveForm() {
-    if (!form.name || !form.full_name || !form.phone) {
-      alert('Заполните обязательные поля');
-      return;
-    }
-    const payload = {
-      name: form.name,
-      full_name: form.full_name,
-      phone: form.phone,
-      card_number: form.card_number || '',
-      bank: form.bank || '',
-      birthdate: form.birthdate || null,
-      note: form.note || '',
-      status: form.status || 'active',
-      position: form.position || '',
-      is_admin: form.is_admin,
-    };
-    try {
-      if (form.id) {
-        await api.put(`employees/${form.id}`, payload);
-      } else {
-        payload.id = form.id || Date.now().toString();
-        await api.post('employees/', payload);
-      }
-      if (form.photo_file) {
-        const fd = new FormData();
-        fd.append('file', form.photo_file);
-        await api.post(`employees/${payload.id}/photo`, fd);
-      }
-      setShowForm(false);
-      setForm(emptyForm);
-      load();
-    } catch (err) {
-      console.error(err);
-      alert('Ошибка при сохранении');
-    }
-  }
-
-  function handleFile(e) {
-    const file = e.target.files?.[0];
-    if (file) {
-      setForm((f) => ({ ...f, photo_file: file }));
-    }
-  }
 
   const filtered = employees.filter(
     (e) =>
@@ -236,97 +179,14 @@ export default function Employees() {
       </div>
 
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-4 space-y-2 rounded shadow w-80">
-            <h2 className="text-lg font-bold mb-2">
-              {form.id ? 'Редактирование' : 'Новый сотрудник'}
-            </h2>
-            <input
-              className="border p-2 w-full"
-              placeholder="Имя"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-            <input
-              className="border p-2 w-full"
-              placeholder="ФИО"
-              value={form.full_name}
-              onChange={(e) => setForm({ ...form, full_name: e.target.value })}
-            />
-            <input
-              className="border p-2 w-full"
-              placeholder="Телефон"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            />
-            <input
-              className="border p-2 w-full"
-              placeholder="Номер карты"
-              value={form.card_number}
-              onChange={(e) => setForm({ ...form, card_number: e.target.value })}
-            />
-            <input
-              className="border p-2 w-full"
-              placeholder="Банк"
-              value={form.bank}
-              onChange={(e) => setForm({ ...form, bank: e.target.value })}
-            />
-            <input
-              className="border p-2 w-full"
-              placeholder="Должность"
-              value={form.position}
-              onChange={(e) => setForm({ ...form, position: e.target.value })}
-            />
-            <input
-              type="date"
-              className="border p-2 w-full"
-              value={form.birthdate}
-              onChange={(e) => setForm({ ...form, birthdate: e.target.value })}
-            />
-            <textarea
-              className="border p-2 w-full"
-              placeholder="Заметка"
-              value={form.note}
-              onChange={(e) => setForm({ ...form, note: e.target.value })}
-            />
-            <select
-              className="border p-2 w-full"
-              value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value })}
-            >
-              <option value="active">active</option>
-              <option value="inactive">inactive</option>
-            </select>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={form.sync_to_bot}
-                onChange={(e) =>
-                  setForm({ ...form, sync_to_bot: e.target.checked })
-                }
-              />
-              Отразить в боте
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={form.is_admin}
-                onChange={(e) => setForm({ ...form, is_admin: e.target.checked })}
-              />
-              Администратор
-            </label>
-            <input type="file" onChange={handleFile} />
-            <div className="flex justify-end gap-2 pt-2">
-              <button className="bg-gray-300 px-3 py-1 rounded-xl" onClick={() => setShowForm(false)}>
-                Отмена
-              </button>
-              <button className="bg-blue-600 text-white px-3 py-1 rounded-xl" onClick={saveForm}>
-                Сохранить
-              </button>
-            </div>
-          </div>
-        </div>
+        <EmployeeForm
+          mode={formMode}
+          initialData={current}
+          onClose={() => setShowForm(false)}
+          onSaved={load}
+        />
       )}
     </div>
   );
 }
+
