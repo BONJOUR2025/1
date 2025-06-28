@@ -1,4 +1,3 @@
-import json
 import re
 import datetime
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
@@ -6,28 +5,28 @@ from telegram.ext import ContextTypes, ConversationHandler
 
 from ...config import (
     ADMIN_CHAT_ID,
-    USERS_FILE,
     MAX_ADVANCE_AMOUNT_PER_MONTH,
 )
-from ...services.users import load_users_map, save_users, add_user, update_user, delete_user
-from ...services.advance_requests import load_advance_requests
+from ...services.employee_service import EmployeeService
+from ...services.payout_service import PayoutService
 from ...keyboards.reply_user import get_cabinet_menu, get_main_menu
 from ...utils.logger import log
 
+employee_service = EmployeeService()
+payout_service = PayoutService()
 
 async def personal_cabinet(
         update: Update,
         context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = str(update.effective_user.id)
-    users = load_users_map()
-    user = users.get(user_id)
+    user = employee_service.get_employee(user_id)
     if not user:
         await update.message.reply_text(
             "❌ Ваши данные не найдены. Обратитесь к администратору.",
             reply_markup=get_main_menu(),
         )
         return
-    name = user.get("name", "Не указано")
+    name = user.name or "Не указано"
     await update.message.reply_text(
         f"👤 Добро пожаловать в личный кабинет, {name}!\nВыберите действие:",
         reply_markup=get_cabinet_menu(),
@@ -39,8 +38,7 @@ async def view_user_info(
         update: Update,
         context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = str(update.effective_user.id)
-    users = load_users_map()
-    user = users.get(user_id)
+    user = employee_service.get_employee(user_id)
     if not user:
         await update.message.reply_text(
             "❌ Ваши данные не найдены.", reply_markup=get_main_menu()
@@ -48,11 +46,11 @@ async def view_user_info(
         return
     info_text = (
         f"📋 Ваши данные:\n"
-        f"Имя: {user.get('name', 'Не указано')}\n"
-        f"ФИО: {user.get('full_name', 'Не указано')}\n"
-        f"Телефон: {user.get('phone', 'Не указано')}\n"
-        f"Банк: {user.get('bank', 'Не указано')}\n"
-        f"🎂 День рождения: {user.get('birthdate', 'Не указано')}"
+        f"Имя: {user.name or 'Не указано'}\n"
+        f"ФИО: {user.full_name or 'Не указано'}\n"
+        f"Телефон: {user.phone or 'Не указано'}\n"
+        f"Банк: {user.bank or 'Не указано'}\n"
+        f"🎂 День рождения: {user.birthdate or 'Не указано'}"
     )
     await update.message.reply_text(info_text, reply_markup=get_cabinet_menu())
 
@@ -162,23 +160,17 @@ async def handle_edit_confirmation(
     if data.startswith("confirm_"):
         _, field, new_value = data.split("_", 2)
         user_id = str(query.from_user.id)
-        users = load_users_map()
-        if user_id not in users:
-            await query.edit_message_text("❌ Ваши данные не найдены.", reply_markup=None)
-            context.user_data.clear()
-            await context.bot.send_message(
-                chat_id=user_id,
-                text="Вы вернулись в главное меню.",
-                reply_markup=get_main_menu(),
-            )
-            return
-        users[user_id]["pending_change"] = {"field": field, "value": new_value}
-        save_users(users)
+        context.application.bot_data[f"pending_change_{user_id}"] = {
+            "field": field,
+            "value": new_value,
+        }
+        emp = employee_service.get_employee(user_id)
+        name = emp.name if emp else user_id
         log(
-            f"DEBUG [handle_edit_confirmation] Сохранено изменение для {user_id}: {field} → {new_value}"
+            f"DEBUG [handle_edit_confirmation] Pending change saved for {user_id}: {field} → {new_value}"
         )
         admin_message = (
-            f"🔔 Пользователь {users[user_id]['name']} хочет обновить данные:\n"
+            f"🔔 Пользователь {name} хочет обновить данные:\n"
             f"Поле: {field}\n"
             f"Новое значение: {new_value}"
         )
@@ -210,27 +202,24 @@ async def handle_admin_change_response(
     query = update.callback_query
     await query.answer()
     data = query.data
+
     if data.startswith("approve_change_"):
         user_id = data.split("_")[-1]
-        users = load_users_map()
-        if user_id not in users:
-            await query.edit_message_text("❌ Пользователь не найден.")
-            return
-        pending_change = users[user_id].get("pending_change", {})
-        field = pending_change.get("field")
-        new_value = pending_change.get("value")
-        if not field or not new_value:
+        info = context.application.bot_data.pop(f"pending_change_{user_id}", None)
+        if not info:
             await query.edit_message_text("❌ Данные для изменения не найдены.")
             return
-        old_value = users[user_id].get(field, "Не указано")
-        users[user_id][field] = new_value
-        del users[user_id]["pending_change"]
-        save_users(users)
+        field = info.get("field")
+        new_value = info.get("value")
+        emp = employee_service.get_employee(user_id)
+        old_value = getattr(emp, field, "Не указано") if emp else "Неизвестно"
+        if emp:
+            employee_service.update_employee(user_id, **{field: new_value})
         log(
             f"✅ [admin_change] Пользователь {user_id} обновил {field}: {old_value} → {new_value}"
         )
         await query.edit_message_text(
-            f"✅ Изменение {field} для {users[user_id]['name']} одобрено: {new_value}"
+            f"✅ Изменение {field} для {emp.name if emp else user_id} одобрено: {new_value}"
         )
         await context.bot.send_message(
             chat_id=user_id,
@@ -239,20 +228,18 @@ async def handle_admin_change_response(
         )
     elif data.startswith("reject_change_"):
         user_id = data.split("_")[-1]
-        users = load_users_map()
-        if user_id not in users:
-            await query.edit_message_text("❌ Пользователь не найден.")
+        info = context.application.bot_data.pop(f"pending_change_{user_id}", None)
+        if not info:
+            await query.edit_message_text("❌ Данные для изменения не найдены.")
             return
-        pending_change = users[user_id].get("pending_change", {})
-        field = pending_change.get("field")
-        new_value = pending_change.get("value")
-        if "pending_change" in users[user_id]:
-            del users[user_id]["pending_change"]
-            save_users(users)
+        field = info.get("field")
+        new_value = info.get("value")
         log(
-            f"❌ [admin_change] Изменение {field} для {user_id} отклонено: {new_value}")
+            f"❌ [admin_change] Изменение {field} для {user_id} отклонено: {new_value}"
+        )
+        emp = employee_service.get_employee(user_id)
         await query.edit_message_text(
-            f"❌ Изменение {field} для {users[user_id]['name']} отклонено."
+            f"❌ Изменение {field} для {emp.name if emp else user_id} отклонено."
         )
         await context.bot.send_message(
             chat_id=user_id,
@@ -260,21 +247,11 @@ async def handle_admin_change_response(
             reply_markup=get_cabinet_menu(),
         )
 
-
 async def view_request_history(update: Update,
                                context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = str(update.effective_user.id)
     try:
-        requests_list = load_advance_requests()
-        if not isinstance(requests_list, list):
-            log(
-                f"❌ [view_request_history] Неверный формат данных в advance_requests: {requests_list}"
-            )
-            await update.message.reply_text(
-                "❌ Ошибка загрузки истории запросов. Обратитесь к администратору.",
-                reply_markup=get_cabinet_menu(),
-            )
-            return
+        requests_list = await payout_service.list_payouts(employee_id=user_id)
     except Exception as e:
         log(
             f"❌ [view_request_history] Ошибка при загрузке запросов для user_id {user_id}: {e}"
@@ -284,18 +261,16 @@ async def view_request_history(update: Update,
             reply_markup=get_cabinet_menu(),
         )
         return
-    user_requests = [r for r in requests_list if r["user_id"] == user_id][-5:]
+    user_requests = requests_list[-5:]
     current_month = datetime.datetime.now().strftime("%Y-%m")
     user_advance_requests = [
         r
         for r in requests_list
-        if r["user_id"] == user_id
-        and r["status"] == "Одобрено"
-        and r["timestamp"].startswith(current_month)
-        and (r.get("payout_type") in ["Аванс", None] or "payout_type" not in r)
+        if r.status == "Одобрено"
+        and r.timestamp.startswith(current_month)
+        and (r.payout_type in ["Аванс", None])
     ]
-    total_advance_amount = sum(int(r.get("amount", 0))
-                               for r in user_advance_requests)
+    total_advance_amount = sum(int(r.amount) for r in user_advance_requests)
     remaining_amount = MAX_ADVANCE_AMOUNT_PER_MONTH - total_advance_amount
     if not user_requests:
         await update.message.reply_text(
@@ -310,25 +285,21 @@ async def view_request_history(update: Update,
             "Одобрено": "✅ Одобрено",
             "Отклонено": "❌ Отклонено",
             "Отменено": "🚫 Отменено",
-        }.get(req["status"], "Неизвестно")
+        }.get(req.status, "Неизвестно")
         history_text += (
-            f"Тип: {
-                req.get(
-                    'payout_type',
-                    'Не указано')} ({
-                req.get(
-                    'method',
-                    'Не указано')})\n" f"Сумма: {
-                        req.get(
-                            'amount',
-                            'Не указано')} ₽\n" f"Статус: {status_text}\n" f"Дата: {
-                                req.get(
-                                    'timestamp',
-                                    'Не указана')}\n\n")
-    history_text += f"Авансы за {current_month}: {total_advance_amount} ₽ из {MAX_ADVANCE_AMOUNT_PER_MONTH} ₽\nОстаток: {remaining_amount} ₽"
+            f"Тип: {req.payout_type or 'Не указано'} ({req.method})\n"
+            f"Сумма: {req.amount} ₽\n"
+            f"Статус: {status_text}\n"
+            f"Дата: {req.timestamp}\n\n"
+        )
+    history_text += (
+        f"Авансы за {current_month}: {total_advance_amount} ₽ из {MAX_ADVANCE_AMOUNT_PER_MONTH} ₽\n"
+        f"Остаток: {remaining_amount} ₽"
+    )
     await update.message.reply_text(
         history_text.strip(), reply_markup=get_cabinet_menu()
     )
     log(
-        f"DEBUG [view_request_history] История запросов отправлена для user_id: {user_id}")
+        f"DEBUG [view_request_history] История запросов отправлена для user_id: {user_id}"
+    )
     context.user_data.clear()

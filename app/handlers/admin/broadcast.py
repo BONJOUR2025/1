@@ -13,8 +13,9 @@ from telegram.error import BadRequest
 from ...utils import is_valid_user_id
 
 from ...config import ADMIN_ID
-from ...services.users import load_users_map
+from ...services.employee_service import EmployeeService
 from ...utils.logger import log
+employee_service = EmployeeService()
 from ...constants import UserStates
 from ...keyboards.reply_admin import get_home_button, get_admin_menu
 
@@ -193,8 +194,8 @@ async def handle_broadcast_send(
         f"📢 [handle_broadcast_send] Отправка рассылки от {user_id}: {message_text}"
     )
 
-    users = load_users_map()
-    user_ids = [int(uid) for uid in users.keys()]
+    users = employee_service.list_employees()
+    user_ids = [int(e.id) for e in users]
 
     message = update.message
     message.text = message_text

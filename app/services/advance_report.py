@@ -4,7 +4,7 @@ from typing import Iterable, Optional
 import pandas as pd
 
 
-from .advance_requests import load_advance_requests
+from app.data.payout_repository import PayoutRepository
 
 
 def dataframe_to_markdown(df: pd.DataFrame) -> str:
@@ -55,7 +55,8 @@ def generate_advance_report(
     statuses: Optional[Iterable[str]] = None,
 ) -> pd.DataFrame:
     """Возвращает DataFrame с запросами аванса за указанный период и статусы."""
-    requests = load_advance_requests()
+    repo = PayoutRepository()
+    requests = repo.load_all()
     rows = []
     for req in requests:
         if req.get("payout_type") != "Аванс":

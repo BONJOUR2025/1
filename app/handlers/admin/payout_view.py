@@ -9,7 +9,8 @@ from ...constants import UserStates
 from ...core.constants import MONTHS_RU, PAYOUT_TYPES
 from ...config import ADMIN_ID
 from ...keyboards.reply_admin import get_admin_menu
-from ...services.advance_requests import load_advance_requests
+from ...services.employee_service import EmployeeService
+from ...services.payout_service import PayoutService
 
 __all__ = [
     "view_payouts",
@@ -23,6 +24,9 @@ __all__ = [
     "show_employee_keyboard",
     "show_payouts_page",
 ]
+
+employee_service = EmployeeService()
+payout_service = PayoutService()
 
 
 async def view_payouts(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -143,11 +147,8 @@ async def select_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def show_employee_keyboard(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ):
-    from ...services.users import load_users_map
-
-    users = load_users_map()
     employees = sorted(
-        {u.get("name", "").strip() for u in users.values() if u.get("name")}
+        {e.name.strip() for e in employee_service.list_employees() if e.name}
     )
     if not employees:
         await update.message.reply_text("❌ Список сотрудников пуст.")
@@ -166,11 +167,8 @@ async def show_employee_keyboard(
 async def select_employee_filter(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ):
-    from ...services.users import load_users_map
-
-    users = load_users_map()
     employees = {
-        u.get("name", "").strip() for u in users.values() if u.get("name")
+        e.name.strip() for e in employee_service.list_employees() if e.name
     }
 
     selected = update.message.text.strip()
@@ -222,7 +220,7 @@ async def select_sort(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["sort_key"] = sort_key
     context.user_data["sort_reverse"] = reverse
 
-    requests = load_advance_requests()
+    requests = await payout_service.list_payouts()
     payout_type_filter = context.user_data.get("payout_type_filter")
     period_filter = context.user_data.get("period_filter")
     status_filter = context.user_data.get("status_filter")
@@ -286,23 +284,21 @@ async def show_payouts_page(
     end_idx = min(start_idx + items_per_page, len(filtered_requests))
     page_requests = filtered_requests[start_idx:end_idx]
 
-    from ...services.users import load_users_map
-
-    users = load_users_map()
+    users = {e.id: e.name for e in employee_service.list_employees()}
 
     lines = []
     for req in page_requests:
-        uid = req.get("user_id", "Неизвестно")
-        uname = users.get(uid, {}).get("name", "Неизвестно")
+        uid = req.user_id
+        uname = users.get(uid, "Неизвестно")
         lines.append(
             "\n".join(
                 [
                     f"👤 {uname}",
-                    f"Тип: {req.get('payout_type', 'Не указано')}",
-                    f"Сумма: {req.get('amount', 'Не указано')} ₽",
-                    f"Метод: {req.get('method', 'Не указано')}",
-                    f"Статус: {req.get('status', 'Не указано')}",
-                    f"Дата: {req.get('timestamp', 'Не указана')}",
+                    f"Тип: {req.payout_type or 'Не указано'}",
+                    f"Сумма: {req.amount} ₽",
+                    f"Метод: {req.method}",
+                    f"Статус: {req.status}",
+                    f"Дата: {req.timestamp}",
                 ]
             )
         )

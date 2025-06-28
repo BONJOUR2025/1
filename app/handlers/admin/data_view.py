@@ -4,7 +4,6 @@ from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
 from ...constants import UserStates
 from ...config import EXCEL_FILE
-from ...services.users import load_users_map
 from ...keyboards.reply_admin import get_admin_menu, get_month_keyboard, get_home_button
 from ...services.excel import load_data
 from ...services.report import generate_employee_report

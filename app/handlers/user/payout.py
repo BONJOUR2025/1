@@ -9,7 +9,6 @@ from ...config import (
 from ...services.employee_service import EmployeeService
 from ...services.payout_service import PayoutService
 from ...services.telegram_service import TelegramService
-from ...services.advance_requests import check_pending_request
 from ...schemas.payout import PayoutCreate
 from ...keyboards.reply_user import get_main_menu
 from ...utils.logger import log
@@ -30,21 +29,17 @@ async def request_payout_user(update: Update,
                 "❌ Вы не зарегистрированы.", reply_markup=get_main_menu()
             )
         return ConversationHandler.END
-    if check_pending_request(user_id):
+    pending = await payout_service.list_payouts(employee_id=user_id, status="Ожидает")
+    if pending:
         if update.message:
             await update.message.reply_text(
                 "❌ У вас уже есть необработанный запрос.",
                 reply_markup=get_main_menu(),
             )
-        log(
-            f"DEBUG [request_payout_user] Обнаружен pending-запрос для {user_id}")
+        log(f"DEBUG [request_payout_user] Обнаружен pending-запрос для {user_id}")
         return ConversationHandler.END
-    requests_list = load_advance_requests()
-    total_advance_amount = sum(
-        req["amount"]
-        for req in requests_list
-        if req["user_id"] == user_id and req["status"] == "Одобрено"
-    )
+    all_payouts = await payout_service.list_payouts(employee_id=user_id, status="Одобрено")
+    total_advance_amount = sum(p.amount for p in all_payouts)
     log(
         f"DEBUG [request_payout_user] total_advance_amount: {total_advance_amount}")
     if total_advance_amount >= MAX_ADVANCE_AMOUNT_PER_MONTH:
