@@ -142,7 +142,21 @@ export default function Payouts() {
 
   async function updateStatus(id, status) {
     try {
-      await api.put(`payouts/${id}/status`, { status });
+      let endpoint = '';
+      switch (status) {
+        case 'Одобрено':
+          endpoint = `payouts/${id}/approve`;
+          break;
+        case 'Отказано':
+          endpoint = `payouts/${id}/reject`;
+          break;
+        case 'Выплачен':
+          endpoint = `payouts/${id}/mark_paid`;
+          break;
+        default:
+          return;
+      }
+      await api.post(endpoint);
       setToast('Статус обновлён');
       setToastType('info');
       load();
