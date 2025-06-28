@@ -1,26 +1,23 @@
-import api from '../api';
-    load();
-    window.refreshPage = load;
-  }, []);
-    try {
-      const res = await api.get('birthdays/');
-      setList(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-      <button className="bg-blue-600 text-white px-3 py-2 rounded" onClick={load}>Обновить</button>
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Cake } from 'lucide-react';
 
 export default function Birthdays() {
   const [list, setList] = useState([]);
 
+  async function load() {
+    try {
+      const res = await axios.get('/api/birthdays');
+      setList(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
     load();
+    window.refreshPage = load;
   }, []);
-
-  async function load() {
-    const res = await axios.get('/api/birthdays');
-    setList(res.data);
-  }
 
   function formatDate(dateStr) {
     const date = new Date(dateStr);
@@ -32,6 +29,9 @@ export default function Birthdays() {
       <h2 className="text-2xl font-semibold tracking-tight text-gray-800 flex items-center gap-2">
         <Cake size={24} /> Ближайшие дни рождения
       </h2>
+      <button className="bg-blue-600 text-white px-3 py-2 rounded" onClick={load}>
+        Обновить
+      </button>
 
       {list.length === 0 && (
         <p className="text-gray-500 italic">Нет сотрудников с ближайшими днями рождения.</p>
