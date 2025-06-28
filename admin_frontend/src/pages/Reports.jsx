@@ -1,7 +1,18 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Download, BarChartBig } from 'lucide-react';
 import api from '../api';
+
+export default function Reports() {
   const [employees, setEmployees] = useState([]);
-    load();
-  async function load() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    loadEmployees();
+  }, []);
+
+  async function loadEmployees() {
     try {
       const res = await api.get('employees/');
       setEmployees(res.data);
@@ -9,6 +20,22 @@ import api from '../api';
       console.error(err);
     }
   }
+
+  async function load() {
+    setLoading(true);
+    try {
+      const res = await axios.get('/api/analytics/sales');
+      setData(res.data);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="space-y-6 max-w-3xl mx-auto">
+      <h2 className="text-2xl font-semibold tracking-tight text-gray-800 flex items-center gap-2">
+        <BarChartBig size={24} /> Отчёты по продажам
+      </h2>
 
       <div className="overflow-x-auto shadow rounded bg-white">
         <table className="min-w-full text-sm table-auto">
@@ -36,21 +63,6 @@ import api from '../api';
           </tbody>
         </table>
       </div>
-  async function load() {
-    setLoading(true);
-    try {
-      const res = await axios.get('/api/analytics/sales');
-      setData(res.data);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <div className="space-y-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-semibold tracking-tight text-gray-800 flex items-center gap-2">
-        <BarChartBig size={24} /> Отчёты по продажам
-      </h2>
 
       <div className="flex flex-wrap gap-3">
         <button
@@ -81,9 +93,7 @@ import api from '../api';
         </div>
       )}
 
-      {!data && (
-        <p className="text-gray-500 italic">Аналитика пока не загружена.</p>
-      )}
+      {!data && <p className="text-gray-500 italic">Аналитика пока не загружена.</p>}
     </div>
   );
 }
