@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react';
+import { Send, User, MessageSquare } from 'lucide-react';
 import api from '../api';
+
+export default function Broadcast() {
+  const [message, setMessage] = useState('');
+  const [chatId, setChatId] = useState('');
+
+  useEffect(() => {
     window.refreshPage = () => {
       setMessage('');
       setChatId('');
     };
   }, []);
+
+  async function sendAll() {
     if (!message.trim()) return;
     if (!window.confirm('Отправить сообщение всем?')) return;
     try {
@@ -13,6 +22,10 @@ import api from '../api';
     } catch (err) {
       console.error(err);
     }
+  }
+
+  async function sendOne() {
+    if (!message.trim() || !chatId.trim()) return;
     try {
       await api.post('telegram/send_message', {
         user_id: chatId,
@@ -22,19 +35,6 @@ import api from '../api';
     } catch (err) {
       console.error(err);
     }
-  const [message, setMessage] = useState('');
-  const [chatId, setChatId] = useState('');
-
-  async function sendAll() {
-    if (!message.trim()) return;
-    await axios.post('/api/messages/broadcast', { message });
-    setMessage('');
-  }
-
-  async function sendOne() {
-    if (!message.trim() || !chatId.trim()) return;
-    await axios.post(`/api/messages/${chatId}`, { text: message });
-    setMessage('');
   }
 
   return (
