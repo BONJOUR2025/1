@@ -4,12 +4,15 @@ from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
 from ...config import EXCEL_FILE
-from ...services.users import load_users_map
+from ...services.employee_service import EmployeeService
 from ...keyboards.reply_user import get_month_keyboard_user, get_main_menu
 from ...utils.image import create_schedule_image, create_combined_table_image
 from ...services.excel import load_data
 from ...services.report import generate_employee_report
 from ...utils.logger import log
+
+
+employee_service = EmployeeService()
 
 
 async def view_salary_user(
@@ -71,8 +74,7 @@ async def handle_selected_month_user(
     loading_message = await update.message.reply_text("⏳ Загружаю данные...")
     await context.bot.send_chat_action(chat_id=update.message.chat_id, action="typing")
 
-    users = load_users_map()
-    user = users.get(user_id)
+    user = employee_service.get_employee(user_id)
     if not user:
         await loading_message.edit_text(
             "❌ Информация о пользователе не найдена. Обратитесь к администратору.",
@@ -192,14 +194,13 @@ async def handle_schedule_request(
         context: ContextTypes.DEFAULT_TYPE):
     """Отправляет расписание на текущий выбранный месяц."""
     user_id = update.effective_user.id
-    users = load_users_map()
-    user_info = users.get(str(user_id))
-    if not user_info or not user_info.get("name"):
+    emp = employee_service.get_employee(str(user_id))
+    if not emp or not emp.name:
         await update.message.reply_text(
             "❌ Ваши данные не найдены. Обратитесь к администратору."
         )
         return
-    original_employee_name = user_info["name"]
+    original_employee_name = emp.name
     month = context.user_data.get("selected_month", "ЯНВАРЬ")
     log(
         f"📌 [handle_schedule_request] Запрос расписания для '{original_employee_name}' за {month}, user_id: {user_id}"

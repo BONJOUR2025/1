@@ -1,16 +1,18 @@
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 from ...utils.logger import log
-from ...services.users import load_users_map
+from ...services.employee_service import EmployeeService
 from ...keyboards.reply_user import get_main_menu
+
+
+employee_service = EmployeeService()
 
 
 async def get_user_info_user(update: Update,
                              context: ContextTypes.DEFAULT_TYPE) -> None:
     """Выводит главное меню сотрудника."""
     user_id = str(update.effective_user.id)
-    users = load_users_map()
-    user = users.get(user_id)
+    user = employee_service.get_employee(user_id)
     if not user:
         if update.message:
             await update.message.reply_text(
@@ -18,7 +20,7 @@ async def get_user_info_user(update: Update,
                 reply_markup=get_main_menu(),
             )
         return
-    name = user.get("name", "Пользователь")
+    name = user.name or "Пользователь"
     greeting_text = f"Приветствую тебя, {name}!\n\nВыберите действие:"
     if update.message:
         await update.message.reply_text(greeting_text, reply_markup=get_main_menu())

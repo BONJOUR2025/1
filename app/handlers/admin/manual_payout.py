@@ -9,24 +9,27 @@ from telegram import (
 from telegram.ext import ContextTypes, ConversationHandler
 from telegram.error import BadRequest
 
-from ...services.users import load_users_map
+from ...services.employee_service import EmployeeService
+from ...services.payout_service import PayoutService
+from ...services.telegram_service import TelegramService
+from ...schemas.payout import PayoutCreate
 from ...keyboards.reply_admin import get_admin_menu
-from ...services.advance_requests import log_new_request
 from ...constants import ManualPayoutStates
 from ...utils.logger import log
+
+
+employee_service = EmployeeService()
+telegram_service = TelegramService(employee_service._repo)
+payout_service = PayoutService(telegram_service=telegram_service)
 
 
 async def manual_payout_start(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ):
-    users = load_users_map()
-    employee_names = sorted(
-        {u.get("name") for u in users.values() if u.get("name")}
-    )
+    employees = employee_service.list_employees()
+    employee_names = sorted(e.full_name or e.name for e in employees if e.name)
     keyboard = [[name] for name in employee_names] + [["🏠 Домой"]]
-    context.user_data["manual_users"] = {
-        v["name"]: uid for uid, v in users.items() if "name" in v
-    }
+    context.user_data["manual_users"] = {e.full_name or e.name: e.id for e in employees}
     await update.message.reply_text(
         "Выберите сотрудника:",
         reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True),
@@ -90,10 +93,9 @@ async def manual_payout_method(
     method = update.message.text
     context.user_data["manual_payout"]["method"] = method
     data = context.user_data["manual_payout"]
-    users = load_users_map()
-    user = users.get(data["user_id"], {})
-    data["phone"] = user.get("phone", "—")
-    data["bank"] = user.get("bank", "—")
+    emp = employee_service.get_employee(data["user_id"])
+    data["phone"] = emp.phone if emp else "—"
+    data["bank"] = emp.bank if emp else "—"
 
     msg = (
         f"📤 Создать запрос от имени:\n" f"👤 {
@@ -149,14 +151,17 @@ async def manual_payout_finalize(
         return ConversationHandler.END
 
     data = context.user_data.get("manual_payout", {})
-    log_new_request(
-        data["user_id"],
-        data["name"],
-        data["phone"],
-        data["bank"],
-        data["amount"],
-        data["method"],
-        data["payout_type"],
+    await payout_service.create_payout(
+        PayoutCreate(
+            user_id=data["user_id"],
+            name=data["name"],
+            phone=data["phone"],
+            bank=data["bank"],
+            amount=data["amount"],
+            method=data["method"],
+            payout_type=data["payout_type"],
+            sync_to_bot=True,
+        )
     )
     log(
         f"[Telegram] editing message {query.message.message_id} in {query.message.chat.id}"

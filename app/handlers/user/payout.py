@@ -6,24 +6,25 @@ from ...config import (
     MAX_ADVANCE_AMOUNT_PER_MONTH,
     CARD_DISPATCH_CHAT_ID,
 )
-from ...services.users import load_users_map, save_users
-from ...services.advance_requests import (
-    log_new_request,
-    check_pending_request,
-    load_advance_requests,
-)
+from ...services.employee_service import EmployeeService
+from ...services.payout_service import PayoutService
+from ...services.telegram_service import TelegramService
+from ...services.advance_requests import check_pending_request
+from ...schemas.payout import PayoutCreate
 from ...keyboards.reply_user import get_main_menu
 from ...utils.logger import log
 
 from ...constants import PayoutStates
 
 
+employee_service = EmployeeService()
+telegram_service = TelegramService(employee_service._repo)
+payout_service = PayoutService(telegram_service=telegram_service)
 async def request_payout_user(update: Update,
                               context: ContextTypes.DEFAULT_TYPE) -> int:
     user_id = str(update.effective_user.id)
     log(f"DEBUG [request_payout_user] Запрос выплаты от user_id: {user_id}")
-    users = load_users_map()
-    if user_id not in users:
+    if not employee_service.get_employee(user_id):
         if update.message:
             await update.message.reply_text(
                 "❌ Вы не зарегистрированы.", reply_markup=get_main_menu()
@@ -132,11 +133,10 @@ async def payout_method_user(update: Update,
     log(
         f"DEBUG [payout_method_user] Выбран метод: {method} для user_id: {user_id}")
     if method == "💳 На карту":
-        users = load_users_map()
-        user_info = users.get(str(user_id), {})
-        name = user_info.get("name", "—")
-        phone = user_info.get("phone", "—")
-        bank = user_info.get("bank", "—")
+        emp = employee_service.get_employee(str(user_id))
+        name = emp.name if emp else "—"
+        phone = emp.phone if emp else "—"
+        bank = emp.bank if emp else "—"
         card_text = (
             f"🧾 Текущие реквизиты:\n\n👤 Имя: {name}\n📱 Телефон: {phone}\n🏦 Банк: {bank}\n\nПодтвердите, чтобы отправить запрос."
         )
@@ -176,32 +176,32 @@ async def handle_card_confirmation(
         return ConversationHandler.END
     card_info = context.user_data.get("card_temp")
     if not card_info:
-        users = load_users_map()
-        user_info = users.get(user_id, {})
+        emp = employee_service.get_employee(user_id)
         card_info = {
-            "name": user_info.get("name", "—"),
-            "phone": user_info.get("phone", "—"),
-            "bank": user_info.get("bank", "—"),
+            "name": emp.name if emp else "—",
+            "phone": emp.phone if emp else "—",
+            "bank": emp.bank if emp else "—",
         }
     name = card_info.get("name")
     phone = card_info.get("phone")
     bank = card_info.get("bank")
-    users = load_users_map()
-    if user_id in users:
-        users[user_id]["name"] = name
-        users[user_id]["phone"] = phone
-        users[user_id]["bank"] = bank
-        save_users(users)
+    emp = employee_service.get_employee(user_id)
+    if emp:
+        employee_service.update_employee(user_id, name=name, phone=phone, bank=bank)
     try:
         log(f"DEBUG [handle_card_confirmation] Логируем запрос для {user_id}")
-        log_new_request(
-            user_id,
-            name,
-            phone,
-            bank,
-            amount,
-            method,
-            payout_type)
+        await payout_service.create_payout(
+            PayoutCreate(
+                user_id=user_id,
+                name=name,
+                phone=phone,
+                bank=bank,
+                amount=amount,
+                method=method,
+                payout_type=payout_type,
+                sync_to_bot=True,
+            )
+        )
     except Exception as e:
         log(f"❌ [handle_card_confirmation] Ошибка записи запроса: {e}")
         await query.edit_message_text(
@@ -279,8 +279,7 @@ async def confirm_payout_user(update: Update,
         )
         context.user_data.clear()
         return ConversationHandler.END
-    users = load_users_map()
-    user = users.get(user_id)
+    user = employee_service.get_employee(user_id)
     if not user:
         log(f"❌ [confirm_payout_user] Пользователь {user_id} не найден")
         await message.reply_text(
@@ -307,8 +306,17 @@ async def confirm_payout_user(update: Update,
     )
     try:
         log(f"DEBUG [confirm_payout_user] Логируем запрос для {user_id}")
-        log_new_request(
-            user_id, name, phone, bank, amount, payout_method, payout_type
+        await payout_service.create_payout(
+            PayoutCreate(
+                user_id=user_id,
+                name=name,
+                phone=phone,
+                bank=bank,
+                amount=amount,
+                method=payout_method,
+                payout_type=payout_type,
+                sync_to_bot=True,
+            )
         )
     except Exception as e:
         log(f"❌ [confirm_payout_user] Ошибка записи запроса: {e}")

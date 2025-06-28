@@ -6,9 +6,11 @@ from typing import Optional
 from ...utils.image import create_combined_table_image
 from ...services.report import generate_employee_report
 from ...services.excel import load_data
-from ...services.users import load_users_map
+from ...services.employee_service import EmployeeService
 from ...utils.logger import log
 
+
+employee_service = EmployeeService()
 
 async def handle_salary_request(
     update: Update, context: ContextTypes.DEFAULT_TYPE
@@ -59,15 +61,12 @@ async def handle_salary_request(
         )
         return
 
-    users = load_users_map()
-    user = users.get(user_id)
+    user = employee_service.get_employee(user_id)
     if not user:
-        await loading_message.edit_text(
-            "❌ Информация о пользователе не найдена. Обратитесь к администратору."
-        )
+        await loading_message.edit_text("❌ Информация о пользователе не найдена. Обратитесь к администратору.")
         return
 
-    user_name: str = user.get("name")
+    user_name: str = user.name
     log(f"✅ [handle_salary_request] Пользователь найден: {user_name}")
 
     # Фильтрация данных по имени сотрудника

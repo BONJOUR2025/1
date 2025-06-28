@@ -4,75 +4,51 @@ from telegram.ext import ContextTypes, ConversationHandler
 from telegram import Update
 from telegram.error import BadRequest
 from ...utils.logger import log
-import datetime
 from ...config import ADMIN_CHAT_ID
-from ...services.users import load_users_map
+from ...services.employee_service import EmployeeService
+from ...services.birthday_service import BirthdayService
 from telegram.ext import Application
 
 
+employee_service = EmployeeService()
+birthday_service = BirthdayService(employee_service._repo)
+
+
 async def check_birthdays(app: Application):
-    today = datetime.date.today()
-    tomorrow = today + datetime.timedelta(days=1)
+    today_birthdays = await birthday_service.get_today_birthdays()
+    upcoming = await birthday_service.get_upcoming_birthdays(days=1)
 
-    users = load_users_map()
-
-    for uid, user in users.items():
-        bdate_str = user.get("birthdate")
-        if not bdate_str:
-            continue
+    for item in today_birthdays:
+        log(
+            f"[Telegram] birthday notification for today to {ADMIN_CHAT_ID} — {item.full_name}"
+        )
         try:
-            bdate = datetime.datetime.strptime(bdate_str, "%Y-%m-%d").date()
-        except ValueError:
-            continue
-        name = user.get("name", "Без имени")
-        if (bdate.day, bdate.month) == (today.day, today.month):
-            log(
-                f"[Telegram] birthday notification for today to {ADMIN_CHAT_ID} — {name}"
+            await app.bot.send_message(
+                chat_id=ADMIN_CHAT_ID,
+                text=f"🎉 Сегодня день рождения у {item.full_name}!",
             )
-            try:
-                await app.bot.send_message(
-                    chat_id=ADMIN_CHAT_ID,
-                    text=f"🎉 Сегодня день рождения у {name}!",
-                )
-            except BadRequest as e:
-                log(f"❌ Failed to send message to chat {ADMIN_CHAT_ID} — {e}")
-                raise
-        elif (bdate.day, bdate.month) == (tomorrow.day, tomorrow.month):
-            log(
-                f"[Telegram] birthday notification for tomorrow to {ADMIN_CHAT_ID} — {name}"
+        except BadRequest as e:
+            log(f"❌ Failed to send message to chat {ADMIN_CHAT_ID} — {e}")
+            raise
+
+    for item in upcoming:
+        log(
+            f"[Telegram] birthday notification for tomorrow to {ADMIN_CHAT_ID} — {item.full_name}"
+        )
+        try:
+            await app.bot.send_message(
+                chat_id=ADMIN_CHAT_ID,
+                text=f"📅 Завтра день рождения у {item.full_name}",
             )
-            try:
-                await app.bot.send_message(
-                    chat_id=ADMIN_CHAT_ID,
-                    text=f"📅 Завтра день рождения у {name}",
-                )
-            except BadRequest as e:
-                log(f"❌ Failed to send message to chat {ADMIN_CHAT_ID} — {e}")
-                raise
+        except BadRequest as e:
+            log(f"❌ Failed to send message to chat {ADMIN_CHAT_ID} — {e}")
+            raise
 
 
 async def show_birthdays(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Отображает список ближайших дней рождений сотрудников."""
-    users = load_users_map()
-    today = datetime.date.today()
-    upcoming = []
-    for user in users.values():
-        bdate_str = user.get("birthdate")
-        if not bdate_str:
-            continue
-        try:
-            bdate = datetime.datetime.strptime(bdate_str, "%Y-%m-%d").date()
-        except ValueError:
-            continue
-        next_bday = bdate.replace(year=today.year)
-        if next_bday < today:
-            next_bday = next_bday.replace(year=today.year + 1)
-        diff = (next_bday - today).days
-        upcoming.append((diff, next_bday, user.get("name", "Без имени")))
-    upcoming.sort(key=lambda x: x[0])
-    lines = [
-        f"{date.strftime('%d.%m')} - {name}" for _, date, name in upcoming
-    ]
+    upcoming = await birthday_service.upcoming_birthdays()
+    lines = [f"{b.birthdate[5:]} - {b.full_name}" for b in upcoming]
     text = "🎂 Ближайшие дни рождения:\n" + (
         "\n".join(lines) if lines else "Нет данных"
     )
