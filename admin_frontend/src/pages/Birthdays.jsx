@@ -44,8 +44,8 @@ export default function Birthdays() {
             key={b.id}
             className="bg-white p-4 rounded-lg shadow border hover:bg-gray-50 transition"
           >
-            <div className="text-lg font-medium text-gray-800">{b.name}</div>
-            <div className="text-sm text-gray-600 mt-1">🎂 {formatDate(b.birth_date)}</div>
+            <div className="text-lg font-medium text-gray-800">{b.full_name}</div>
+            <div className="text-sm text-gray-600 mt-1">🎂 {formatDate(b.birthdate)}</div>
           </div>
         ))}
       </div>
