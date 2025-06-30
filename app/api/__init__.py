@@ -22,6 +22,7 @@ from ..services.message_service import MessageService
 from ..services.analytics import AnalyticsService
 from .vacations import create_vacation_router
 from .adjustments import create_adjustment_router
+from .birthdays import create_birthday_router
 
 
 def create_app() -> FastAPI:
@@ -85,6 +86,8 @@ def create_app() -> FastAPI:
     from .analytics import create_analytics_router
     analytics_service = AnalyticsService()
     app.include_router(create_analytics_router(analytics_service), prefix="/api")
+
+    app.include_router(create_birthday_router(), prefix="/api")
 
     app.include_router(
         create_telegram_router(

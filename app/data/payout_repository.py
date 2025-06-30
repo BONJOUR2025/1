@@ -11,6 +11,10 @@ class PayoutRepository:
     def __init__(self, file_path: Optional[str] = None) -> None:
         self._file = file_path or ADVANCE_REQUESTS_FILE
         log(f"📂 Loading payouts from {self._file}")
+        self.reload()
+
+    def reload(self) -> None:
+        """Reload payout data from the underlying JSON file."""
         self._data: List[Dict[str, Any]] = self._load()
         log(f"✅ Loaded payouts: {len(self._data)}")
         if not self._data:
@@ -87,6 +91,7 @@ class PayoutRepository:
 
     def load_all(self) -> List[Dict[str, Any]]:
         """Return raw payout list without filtering."""
+        self.reload()
         return list(self._data)
 
     def list(
@@ -98,6 +103,7 @@ class PayoutRepository:
         from_date: Optional[str] = None,
         to_date: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
+        self.reload()
         result = []
         from_dt = datetime.fromisoformat(from_date) if from_date else None
         to_dt = datetime.fromisoformat(to_date) if to_date else None
@@ -126,6 +132,7 @@ class PayoutRepository:
         return result
 
     def create(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        self.reload()
         if "id" not in data or any(
                 p.get("id") == data["id"] for p in self._data):
             data["id"] = self._generate_id()
@@ -135,6 +142,7 @@ class PayoutRepository:
 
     def update(self, payout_id: str,
                updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        self.reload()
         for item in self._data:
             if str(item.get("id")) == str(payout_id):
                 item.update(
@@ -144,10 +152,12 @@ class PayoutRepository:
         return None
 
     def delete_many(self, ids: List[str]) -> None:
+        self.reload()
         self._data = [p for p in self._data if str(p.get("id")) not in ids]
         self._save()
 
     def delete(self, payout_id: str) -> bool:
+        self.reload()
         before = len(self._data)
         self._data = [
             p for p in self._data if str(
