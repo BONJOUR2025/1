@@ -7,6 +7,7 @@ import {
   FileDown,
 } from 'lucide-react';
 import api from '../api';
+import UpcomingBirthdays from '../components/UpcomingBirthdays.jsx';
 
 export default function Employees() {
   const emptyForm = {
@@ -129,6 +130,7 @@ export default function Employees() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <h2 className="text-2xl font-semibold">Сотрудники</h2>
+      <UpcomingBirthdays />
       <div className="flex flex-wrap gap-2 items-center">
         <input
           className="border p-2 flex-grow"
