@@ -20,14 +20,19 @@ export default function Birthdays() {
   }, []);
 
   function formatDate(dateStr) {
-    const date = new Date(dateStr);
+    if (!dateStr) return 'Неверная дата';
+    let date = new Date(dateStr);
+    if (isNaN(date)) {
+      const parts = dateStr.split('.');
+      if (parts.length === 3) {
+        const [d, m, y] = parts;
+        date = new Date(`${y}-${m}-${d}`);
+      }
+    }
     if (isNaN(date)) {
       return 'Неверная дата';
     }
-    return date.toLocaleDateString('ru-RU', {
-      day: '2-digit',
-      month: 'long',
-    });
+    return date.toLocaleDateString('ru-RU');
   }
 
   return (
