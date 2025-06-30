@@ -19,6 +19,7 @@ STATUS_TRANSLATIONS = {
 def load_advance_requests() -> List[Dict[str, Any]]:
     path = _repo._file
     log(f"📂 Загрузка заявок из: {path}")
+    _repo.reload()
     data = _repo.load_all()
     log(f"✅ Загружено заявок: {len(data)}")
     return data

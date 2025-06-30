@@ -7,6 +7,25 @@ import {
   FileDown,
 } from 'lucide-react';
 import api from '../api';
+import UpcomingBirthdays from '../components/UpcomingBirthdays.jsx';
+
+const POSITION_GROUPS = [
+  {
+    label: '🧵 Производство и мастерская',
+    options: [
+      'Мастер по ремонту',
+      'Мастер по химчистке',
+      'Закройщик',
+      'Затяжчик',
+    ],
+  },
+  {
+    label: '🧍‍♂️ Обслуживание клиентов и продажи',
+    options: ['Администратор', 'Менеджер по работе с клиентами'],
+  },
+  { label: '🎨 Креатив и дизайн', options: ['Художник'] },
+  { label: '🚚 Логистика', options: ['Курьер'] },
+];
 
 export default function Employees() {
   const emptyForm = {
@@ -129,6 +148,7 @@ export default function Employees() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <h2 className="text-2xl font-semibold">Сотрудники</h2>
+      <UpcomingBirthdays />
       <div className="flex flex-wrap gap-2 items-center">
         <input
           className="border p-2 flex-grow"
@@ -271,12 +291,22 @@ export default function Employees() {
               value={form.bank}
               onChange={(e) => setForm({ ...form, bank: e.target.value })}
             />
-            <input
+            <select
               className="border p-2 w-full"
-              placeholder="Должность"
               value={form.position}
               onChange={(e) => setForm({ ...form, position: e.target.value })}
-            />
+            >
+              <option value="">Должность</option>
+              {POSITION_GROUPS.map((group) => (
+                <optgroup key={group.label} label={group.label}>
+                  {group.options.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
             <input
               type="date"
               className="border p-2 w-full"
