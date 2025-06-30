@@ -20,8 +20,10 @@ export default function Birthdays() {
   }, []);
 
   function formatDate(dateStr) {
-    if (!dateStr) return 'Неверная дата';
+    if (!dateStr) return '';
+
     let date = new Date(dateStr);
+
     if (isNaN(date)) {
       const parts = dateStr.split('.');
       if (parts.length === 3) {
@@ -29,10 +31,12 @@ export default function Birthdays() {
         date = new Date(`${y}-${m}-${d}`);
       }
     }
-    if (isNaN(date)) {
-      return 'Неверная дата';
+
+    if (!isNaN(date)) {
+      return date.toLocaleDateString('ru-RU');
     }
-    return date.toLocaleDateString('ru-RU');
+
+    return dateStr;
   }
 
   return (
