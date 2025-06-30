@@ -1,4 +1,9 @@
-# Handler functions for payout approval and rejection.
+"""Admin payout actions.
+
+This module handles approving and denying payout requests. It logs each
+decision to ``logs/payout_actions.log`` and warns if a matching request
+cannot be found or updated.
+"""
 from telegram import (
     Update,
     InlineKeyboardButton,
