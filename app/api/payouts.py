@@ -21,6 +21,17 @@ def create_payout_router(service: PayoutService) -> APIRouter:
     ):
         return await service.list_payouts(employee_id, payout_type, status, method, from_date, to_date)
 
+    @router.get("", response_model=list[Payout], include_in_schema=False)
+    async def list_payouts_no_slash(
+        employee_id: Optional[str] = None,
+        payout_type: Optional[str] = None,
+        status: Optional[str] = None,
+        method: Optional[str] = None,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None,
+    ):
+        return await service.list_payouts(employee_id, payout_type, status, method, from_date, to_date)
+
     @router.post("/", response_model=Payout)
     async def create_payout(data: PayoutCreate):
         return await service.create_payout(data)
@@ -51,6 +62,27 @@ def create_payout_router(service: PayoutService) -> APIRouter:
             return updated
         raise HTTPException(status_code=404, detail="not found")
 
+    @router.post("/{payout_id}/approve", response_model=Payout)
+    async def approve(payout_id: str):
+        updated = await service.update_status(payout_id, "Одобрено")
+        if updated:
+            return updated
+        raise HTTPException(status_code=404, detail="not found")
+
+    @router.post("/{payout_id}/reject", response_model=Payout)
+    async def reject(payout_id: str):
+        updated = await service.update_status(payout_id, "Отказано")
+        if updated:
+            return updated
+        raise HTTPException(status_code=404, detail="not found")
+
+    @router.post("/{payout_id}/mark_paid", response_model=Payout)
+    async def mark_paid(payout_id: str):
+        updated = await service.update_status(payout_id, "Выплачен")
+        if updated:
+            return updated
+        raise HTTPException(status_code=404, detail="not found")
+
     @router.delete("/{payout_id}")
     async def delete_payout(payout_id: str):
         deleted = await service.delete_payout(payout_id)
@@ -68,6 +100,11 @@ def create_payout_router(service: PayoutService) -> APIRouter:
         id_list = [i for i in ids.split(",") if i]
         await service.delete_payouts(id_list)
         return {"ok": True}
+
+    @router.get("/unconfirmed", response_model=list[Payout])
+    async def unconfirmed():
+        rows = await service.list_active_payouts()
+        return rows
 
     @router.get("/export.pdf")
     async def export_pdf(
