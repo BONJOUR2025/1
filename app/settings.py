@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     user_password: str | None = Field(None, env="USER_PASSWORD")
     admin_token: str | None = Field(None, env="ADMIN_TOKEN")
     font_path: str = Field(
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "fonts/DejaVuSans.ttf",
         env="FONT_PATH")
     card_dispatch_chat_id: int = Field(-1002667932339,
                                        env="CARD_DISPATCH_CHAT_ID")
