@@ -40,11 +40,6 @@ async def admin_sales(request: Request):
         "admin/analytics_sales.html", {"request": request})
 
 
-@router.get("/birthdays", response_class=HTMLResponse)
-async def admin_birthdays(request: Request):
-    return templates.TemplateResponse(
-        "admin/birthdays.html", {"request": request})
-
 
 @router.get("/broadcasts", response_class=HTMLResponse)
 async def admin_broadcasts(request: Request):

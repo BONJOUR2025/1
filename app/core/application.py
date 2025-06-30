@@ -44,7 +44,6 @@ from ..handlers.admin import (
     handle_schedule_admin,
     reset_payout_request,
     mark_sent,
-    show_birthdays,
     view_payouts,
     show_employee_keyboard,
     handle_pagination,
@@ -54,7 +53,6 @@ from ..handlers.admin import (
     handle_broadcast_message,
     handle_broadcast_confirm,
     handle_broadcast_send,
-    check_birthdays,
 )
 import datetime
 
@@ -63,12 +61,6 @@ def create_application():
     app = ApplicationBuilder().token(TOKEN).build()
     register_handlers(app)
 
-    async def _birthday_job(ctx):
-        await check_birthdays(app)
-
-    app.job_queue.run_daily(
-        _birthday_job, time=datetime.time(
-            hour=10, minute=30))
     return app
 
 

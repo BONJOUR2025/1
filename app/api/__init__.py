@@ -10,14 +10,12 @@ from .employees import create_employee_router
 from .salary import create_salary_router
 from .schedule import create_schedule_router
 from .payouts import create_payout_router
-from .birthdays import create_birthdays_router
 from .telegram import create_telegram_router
 from ..services.employee_service import EmployeeService, EmployeeAPIService
 from ..services.salary_service import SalaryService
 from ..services.schedule_service import ScheduleService
 from ..services.payout_service import PayoutService
 from ..services.telegram_service import TelegramService
-from ..services.birthday_service import BirthdayService
 from ..services.vacation_service import VacationService
 from ..services.adjustment_service import AdjustmentService
 from ..services.message_service import MessageService
@@ -72,10 +70,6 @@ def create_app() -> FastAPI:
     payout_service = PayoutService(telegram_service=telegram_service)
     app.include_router(create_payout_router(payout_service), prefix="/api")
 
-    birthday_service = BirthdayService(employee_service._repo)
-    app.include_router(
-        create_birthdays_router(birthday_service),
-        prefix="/api")
 
     vacation_service = VacationService()
     app.include_router(create_vacation_router(vacation_service), prefix="/api")
