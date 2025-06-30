@@ -187,11 +187,14 @@ def export_advances_to_pdf(
     from ..config import FONT_PATH
 
     font_path = FONT_PATH
+    bold_font = FONT_PATH.replace(".ttf", "-Bold.ttf")
     pdf = FPDF()
     pdf.add_page()
     if os.path.exists(font_path):
-        pdf.add_font("Arial", "", font_path, uni=True)
-        pdf.set_font("Arial", "", 10)
+        pdf.add_font("DejaVu", "", font_path, uni=True)
+        if os.path.exists(bold_font):
+            pdf.add_font("DejaVu", "B", bold_font, uni=True)
+        pdf.set_font("DejaVu", "", 10)
     else:
         print(
             f"⚠️ Шрифт не найден: {font_path}. Используется стандартный Arial"

@@ -1,0 +1,8 @@
+# Ignore font files
+fonts/
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Logs
+*.log

@@ -2,12 +2,20 @@ from types import SimpleNamespace
 from io import BytesIO
 from PyPDF2 import PdfReader
 from app.services.pdf_profile import generate_employee_pdf
+import os
 
 
 
 class DummyEmpRepo:
     def list_employees(self):
-        return [SimpleNamespace(id="1", full_name="Test", name="Tester", birthdate=None)]
+        return [
+            SimpleNamespace(
+                id="1",
+                full_name="Тестовый Пользователь",
+                name="Tester",
+                birthdate=None,
+            )
+        ]
 
 
 class DummyPayoutRepo:
@@ -32,3 +40,5 @@ def test_generate_employee_profile_pdf():
     assert "Telegram ID: 1" in text
     assert "2025-05-01" in text
     assert "PAYOUT HISTORY" in text
+    if os.path.exists("fonts/DejaVuSans.ttf"):
+        assert "Тестовый" in text
