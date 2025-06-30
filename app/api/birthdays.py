@@ -13,6 +13,10 @@ def create_birthdays_router(service: BirthdayService) -> APIRouter:
     async def list_all():
         return await service.all_birthdays()
 
+    @router.get("", response_model=List[BirthdayOut], include_in_schema=False)
+    async def list_birthdays_no_slash():
+        return await service.all_birthdays()
+
     @router.get("/upcoming", response_model=List[BirthdayOut])
     async def upcoming(days_ahead: int = Query(30)):
         return await service.upcoming_birthdays(days_ahead)

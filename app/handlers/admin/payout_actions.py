@@ -1,4 +1,9 @@
-# Handler functions for payout approval and rejection.
+"""Admin payout actions.
+
+This module handles approving and denying payout requests. It logs each
+decision to ``logs/payout_actions.log`` and warns if a matching request
+cannot be found or updated.
+"""
 from telegram import (
     Update,
     InlineKeyboardButton,
@@ -7,6 +12,8 @@ from telegram import (
 )
 from telegram.ext import ContextTypes, ConversationHandler
 from telegram.error import BadRequest
+import logging
+from pathlib import Path
 
 from ...constants import UserStates
 from ...config import (
@@ -23,6 +30,16 @@ from ...services.advance_requests import (
 )
 from ...utils.logger import log
 from ...utils import is_valid_user_id
+
+
+audit_logger = logging.getLogger("payout_actions")
+if not audit_logger.handlers:
+    Path("logs").mkdir(exist_ok=True)
+    handler = logging.FileHandler("logs/payout_actions.log", encoding="utf-8")
+    formatter = logging.Formatter("[%(asctime)s] %(message)s")
+    handler.setFormatter(formatter)
+    audit_logger.addHandler(handler)
+    audit_logger.setLevel(logging.INFO)
 
 PENDING_STATUSES = {"Ожидает", "В ожидании"}
 
@@ -43,16 +60,35 @@ async def allow_payout(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         None,
     )
     if not request_to_approve:
+        log(f"⚠️ [allow_payout] Запрос для user_id {user_id} не найден")
+        audit_logger.warning(
+            f"Не найден запрос на одобрение для user_id {user_id}"
+        )
         await query.edit_message_text("❌ Нет активного запроса для одобрения.")
         return
 
+    log(
+        f"📋 [allow_payout] Найден запрос {request_to_approve['id']} для user_id {user_id}"
+    )
+
     try:
-        update_request_status(user_id, "approved")
-        log(
-            f"✅ Статус выплаты для user_id {user_id} обновлён на Одобрено"
-        )
+        updated = update_request_status(user_id, "approved")
     except Exception as e:
         log(f"❌ Ошибка обновления статуса выплаты: {e}")
+        updated = False
+
+    if updated:
+        log(f"✅ [allow_payout] Статус запроса {request_to_approve['id']} обновлён")
+        audit_logger.info(
+            f"✏️ Выплата {request_to_approve['id']} обновлена — статус: Одобрено"
+        )
+    else:
+        log(
+            f"⚠️ [allow_payout] Не удалось обновить запрос {request_to_approve['id']}"
+        )
+        audit_logger.warning(
+            f"Не удалось обновить запрос {request_to_approve['id']} пользователя {user_id}"
+        )
 
     payout_type = request_to_approve.get("payout_type") or "Не указано"
     user_message = (
@@ -131,16 +167,35 @@ async def deny_payout(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         None,
     )
     if not request_to_deny:
+        log(f"⚠️ [deny_payout] Запрос для user_id {user_id} не найден")
+        audit_logger.warning(
+            f"Не найден запрос на отклонение для user_id {user_id}"
+        )
         await query.edit_message_text("❌ Нет активного запроса для отклонения.")
         return
 
+    log(
+        f"📋 [deny_payout] Найден запрос {request_to_deny['id']} для user_id {user_id}"
+    )
+
     try:
-        update_request_status(user_id, "rejected")
-        log(
-            f"✅ Статус выплаты для user_id {user_id} обновлён на Отклонено"
-        )
+        updated = update_request_status(user_id, "rejected")
     except Exception as e:
         log(f"❌ Ошибка обновления статуса выплаты: {e}")
+        updated = False
+
+    if updated:
+        log(f"✅ [deny_payout] Статус запроса {request_to_deny['id']} обновлён")
+        audit_logger.info(
+            f"✏️ Выплата {request_to_deny['id']} обновлена — статус: Отклонено"
+        )
+    else:
+        log(
+            f"⚠️ [deny_payout] Не удалось обновить запрос {request_to_deny['id']}"
+        )
+        audit_logger.warning(
+            f"Не удалось обновить запрос {request_to_deny['id']} пользователя {user_id}"
+        )
 
     payout_type = request_to_deny.get("payout_type") or "Не указано"
     user_message = (

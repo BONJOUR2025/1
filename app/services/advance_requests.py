@@ -66,18 +66,28 @@ def check_pending_request(user_id: Any) -> bool:
     return len(requests) > 0
 
 
-def update_request_status(user_id: Any, status: str) -> None:
+def update_request_status(user_id: Any, status: str) -> bool:
     items = _repo.list(employee_id=user_id, status="В ожидании")
     if not items:
-        log(f"⚠️ [update_request_status] Не найдено активных запросов для user_id {user_id}")
-        return
+        log(
+            f"⚠️ [update_request_status] Не найдено активных запросов для user_id {user_id}"
+        )
+        return False
     payout_id = items[0]["id"]
     status_ru = STATUS_TRANSLATIONS.get(status.lower(), status)
     updates = {"status": status_ru}
     if not items[0].get("timestamp"):
         updates["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    _repo.update(payout_id, updates)
-    log(f"✅ Статус запроса для user_id {user_id} обновлён на '{status_ru}'")
+    updated = _repo.update(payout_id, updates)
+    if updated:
+        log(
+            f"✅ Статус запроса для user_id {user_id} обновлён на '{status_ru}'"
+        )
+        return True
+    log(
+        f"⚠️ [update_request_status] Не удалось обновить запрос {payout_id} для user_id {user_id}"
+    )
+    return False
 
 
 def delete_request(user_id: Any) -> None:
