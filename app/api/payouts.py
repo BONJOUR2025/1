@@ -62,6 +62,27 @@ def create_payout_router(service: PayoutService) -> APIRouter:
             return updated
         raise HTTPException(status_code=404, detail="not found")
 
+    @router.post("/{payout_id}/approve", response_model=Payout)
+    async def approve(payout_id: str):
+        updated = await service.update_status(payout_id, "Одобрено")
+        if updated:
+            return updated
+        raise HTTPException(status_code=404, detail="not found")
+
+    @router.post("/{payout_id}/reject", response_model=Payout)
+    async def reject(payout_id: str):
+        updated = await service.update_status(payout_id, "Отказано")
+        if updated:
+            return updated
+        raise HTTPException(status_code=404, detail="not found")
+
+    @router.post("/{payout_id}/mark_paid", response_model=Payout)
+    async def mark_paid(payout_id: str):
+        updated = await service.update_status(payout_id, "Выплачен")
+        if updated:
+            return updated
+        raise HTTPException(status_code=404, detail="not found")
+
     @router.delete("/{payout_id}")
     async def delete_payout(payout_id: str):
         deleted = await service.delete_payout(payout_id)
@@ -79,6 +100,11 @@ def create_payout_router(service: PayoutService) -> APIRouter:
         id_list = [i for i in ids.split(",") if i]
         await service.delete_payouts(id_list)
         return {"ok": True}
+
+    @router.get("/unconfirmed", response_model=list[Payout])
+    async def unconfirmed():
+        rows = await service.list_active_payouts()
+        return rows
 
     @router.get("/export.pdf")
     async def export_pdf(
