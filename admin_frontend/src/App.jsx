@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-ro
 import Employees from './pages/Employees';
 import Payouts from './pages/Payouts';
 import Reports from './pages/Reports';
-import Birthdays from './pages/Birthdays';
 import Broadcast from './pages/Broadcast';
 import Analytics from './pages/Analytics';
 import Vacations from './pages/Vacations';
@@ -16,7 +15,6 @@ export default function App() {
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/payouts">Выплаты</Link>
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/vacations">Отпуска</Link>
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/reports">Отчёты</Link>
-          <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/birthdays">Дни рождения</Link>
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/broadcast">Рассылка</Link>
           <Link className="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" to="/admin/analytics">Аналитика</Link>
         </nav>
@@ -24,7 +22,6 @@ export default function App() {
           <Route path="/admin/employees" element={<Employees />} />
           <Route path="/admin/payouts" element={<Payouts />} />
           <Route path="/admin/reports" element={<Reports />} />
-          <Route path="/admin/birthdays" element={<Birthdays />} />
           <Route path="/admin/broadcast" element={<Broadcast />} />
           <Route path="/admin/vacations" element={<Vacations />} />
           <Route path="/admin/analytics" element={<Analytics />} />

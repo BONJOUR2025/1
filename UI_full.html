@@ -16,7 +16,6 @@
       <button class="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" onclick="showSection('payouts')">💳 Выплаты</button>
       <button class="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" onclick="showSection('adjustments')">📈 Удержания/Премии</button>
       <button class="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" onclick="showSection('vacations')">🛫 Отпуска</button>
-      <button class="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" onclick="showSection('birthdays')">🎂 Дни рождения</button>
       <button class="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" onclick="showSection('messages')">✉ Сообщения</button>
       <button class="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" onclick="openBroadcastModal()">📢 Рассылка</button>
       <button class="px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded" onclick="showSection('requests')">📬 Текущие запросы</button>
@@ -34,10 +33,6 @@
       <div class="bg-white rounded-xl shadow-md p-4">
         <p class="text-sm text-gray-500">Отправлено сегодня</p>
         <p id="stat-sent" class="text-2xl font-semibold">0</p>
-      </div>
-      <div class="bg-white rounded-xl shadow-md p-4">
-        <p class="text-sm text-gray-500">Ближайший день рождения</p>
-        <p id="stat-birthday" class="text-2xl font-semibold">-</p>
       </div>
     </div>
 
@@ -194,21 +189,6 @@
       </div>
     </section>
 
-    <!-- BIRTHDAYS SECTION -->
-    <section id="birthdays" class="hidden">
-      <h2 class="text-xl font-semibold mb-2">Все дни рождения</h2>
-      <table class="min-w-full bg-white border rounded shadow">
-        <thead>
-          <tr class="bg-gray-200 text-sm">
-            <th class="p-2 text-left">ФИО</th>
-            <th class="p-2 text-left">Дата рождения</th>
-            <th class="p-2 text-left">Возраст</th>
-            <th class="p-2 text-left">Через сколько дней</th>
-          </tr>
-        </thead>
-        <tbody id="birthdays-body"></tbody>
-      </table>
-    </section>
 
     <!-- MESSAGES SECTION -->
     <section id="messages" class="hidden space-y-4">
@@ -412,9 +392,6 @@
         if (id === 'vacations') {
           loadVacations();
         }
-        if (id === 'birthdays') {
-          loadBirthdays();
-        }
         if (id === 'messages') {
           loadMessages();
         }
@@ -444,24 +421,6 @@
       }
     }
 
-    async function loadBirthdays() {
-      try {
-        const res = await axios.get('/api/birthdays/');
-        const body = document.getElementById('birthdays-body');
-        body.innerHTML = res.data.map(p => `
-          <tr class='border-b odd:bg-gray-50'>
-            <td class='p-2'>${p.full_name}</td>
-            <td class='p-2'>${new Date(p.birthdate).toLocaleDateString()}</td>
-            <td class='p-2'>${p.age}</td>
-            <td class='p-2'>${p.in_days === 0 ? 'Сегодня 🎉' : p.in_days + ' дн.'}</td>
-          </tr>`).join('');
-        if (res.data.length) {
-          document.getElementById('stat-birthday').textContent = new Date(res.data[0].birthdate).toLocaleDateString();
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
 
     async function loadMessages() {
       try {
@@ -1272,7 +1231,6 @@
 
     window.onload = () => {
       loadEmployees();
-      loadBirthdays();
       loadMessages();
       loadActiveRequests();
       loadVacations();
