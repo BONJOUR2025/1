@@ -21,6 +21,9 @@ export default function Birthdays() {
 
   function formatDate(dateStr) {
     const date = new Date(dateStr);
+    if (isNaN(date)) {
+      return 'Неверная дата';
+    }
     return date.toLocaleDateString('ru-RU', {
       day: '2-digit',
       month: 'long',
