@@ -21,6 +21,17 @@ def create_payout_router(service: PayoutService) -> APIRouter:
     ):
         return await service.list_payouts(employee_id, payout_type, status, method, from_date, to_date)
 
+    @router.get("", response_model=list[Payout], include_in_schema=False)
+    async def list_payouts_no_slash(
+        employee_id: Optional[str] = None,
+        payout_type: Optional[str] = None,
+        status: Optional[str] = None,
+        method: Optional[str] = None,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None,
+    ):
+        return await service.list_payouts(employee_id, payout_type, status, method, from_date, to_date)
+
     @router.post("/", response_model=Payout)
     async def create_payout(data: PayoutCreate):
         return await service.create_payout(data)
