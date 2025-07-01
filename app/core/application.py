@@ -54,6 +54,7 @@ from ..handlers.admin import (
     handle_broadcast_confirm,
     handle_broadcast_send,
 )
+from ..handlers.reset import global_reset
 import datetime
 
 
@@ -69,6 +70,9 @@ def register_handlers(app):
     payout_conv_handler = build_payout_conversation()
     admin_conv_handler = build_admin_conversation()
     manual_payout_handler = build_manual_payout_conversation()
+    reset_filter = filters.Regex(r"^(🏠 Домой|Назад|Отмена)$")
+    app.add_handler(MessageHandler(reset_filter, global_reset), group=0)
+    app.add_handler(CommandHandler("cancel", global_reset), group=0)
     app.add_handler(
         CommandHandler("start", get_user_info_user, filters=~filters.User(ADMIN_ID))
     )

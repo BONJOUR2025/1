@@ -69,11 +69,11 @@ class EmployeeReportService:
         font = FONT_PATH
         bold_font = FONT_PATH.replace(".ttf", "-Bold.ttf")
         if os.path.exists(font):
-            pdfmetrics.registerFont(TTFont("Arial", font))
+            pdfmetrics.registerFont(TTFont("DejaVu", font))
             if os.path.exists(bold_font):
-                pdfmetrics.registerFont(TTFont("Arial-Bold", bold_font))
-            font_name = "Arial"
-            bold_name = "Arial-Bold" if os.path.exists(bold_font) else "Arial"
+                pdfmetrics.registerFont(TTFont("DejaVu-Bold", bold_font))
+            font_name = "DejaVu"
+            bold_name = "DejaVu-Bold" if os.path.exists(bold_font) else "DejaVu"
         else:
             log(f"⚠️ Font not found: {font}. Using built-in Helvetica")
             font_name = "Helvetica"
