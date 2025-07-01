@@ -36,3 +36,20 @@ class PayoutUpdate(BaseModel):
     method: Optional[str] = None
     payout_type: Optional[str] = None
     status: Optional[str] = None
+
+
+class PayoutControlItem(BaseModel):
+    """Extended payout info for control dashboard."""
+
+    id: str
+    name: str
+    amount: float
+    date: Optional[str] = None
+    status: str
+    type: str
+    method: str
+    warnings: list[str] = []
+    is_manual: bool = False
+    is_employee_active: bool = True
+    previous_requests_count: int = 0
+    previous_total_month: float = 0.0

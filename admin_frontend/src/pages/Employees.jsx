@@ -172,6 +172,7 @@ export default function Employees() {
               <th className="p-2 text-left">Должность</th>
               <th className="p-2 text-left">Роль</th>
               <th className="p-2 text-left">Создан</th>
+              <th className="p-2 text-left">История</th>
               <th className="p-2"></th>
             </tr>
           </thead>
@@ -212,6 +213,14 @@ export default function Employees() {
                 <td className="p-2">{e.position}</td>
                 <td className="p-2">{e.is_admin ? 'Админ' : 'Пользователь'}</td>
                 <td className="p-2">{new Date(e.created_at).toLocaleDateString()}</td>
+                <td className="p-2">
+                  <a
+                    href={`/admin/incentives?employee_id=${e.id}`}
+                    className="text-blue-600 underline"
+                  >
+                    История
+                  </a>
+                </td>
                 <td className="p-2 text-right">
                   <button className="text-blue-600" onClick={() => startEdit(e)}>
                     <Pencil size={16} />

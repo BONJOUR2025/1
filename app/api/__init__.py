@@ -79,6 +79,11 @@ def create_app() -> FastAPI:
     app.include_router(create_adjustment_router(
         adjustment_service), prefix="/api")
 
+    from .incentives import create_incentive_router
+    from ..services.incentive_service import IncentiveService
+    incentive_service = IncentiveService()
+    app.include_router(create_incentive_router(incentive_service), prefix="/api")
+
     from .messages import create_message_router
     message_service = MessageService(employee_repo=employee_service._repo)
     app.include_router(create_message_router(message_service), prefix="/api")
