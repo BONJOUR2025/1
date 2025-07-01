@@ -17,6 +17,9 @@ from ...services.advance_report import (
 
 
 async def report_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     if update.effective_user.id != ADMIN_ID:
         await update.message.reply_text("❌ У вас нет прав администратора.")
         return ConversationHandler.END

@@ -27,6 +27,9 @@ __all__ = [
 
 async def view_payouts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Начало сценария просмотра выплат."""
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     if update.effective_user.id != ADMIN_ID:
         return ConversationHandler.END
 

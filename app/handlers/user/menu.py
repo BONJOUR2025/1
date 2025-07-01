@@ -16,6 +16,9 @@ async def view_salary_user(
         update: Update,
         context: ContextTypes.DEFAULT_TYPE) -> None:
     """Запрашивает месяц для просмотра зарплаты."""
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     context.user_data["requested_data"] = "salary"
     if update.message:
         await update.message.reply_text(
@@ -28,6 +31,9 @@ async def view_salary_user(
 async def view_schedule_user(update: Update,
                              context: ContextTypes.DEFAULT_TYPE) -> None:
     """Запрашивает месяц для просмотра расписания."""
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     context.user_data["requested_data"] = "schedule"
     if update.message:
         await update.message.reply_text(

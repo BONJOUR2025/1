@@ -12,6 +12,9 @@ admin_mode = {}
 
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Вход в режим администратора."""
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     user_id = update.message.from_user.id
     if user_id != ADMIN_ID:
         log(f"🛂 [admin] Вход в функцию, user_id: {user_id}")
@@ -26,6 +29,9 @@ async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def home_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Возврат в главное меню администратора."""
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     context.user_data.clear()
     log(
         f"DEBUG [home_callback] Сброс состояний для user_id: {

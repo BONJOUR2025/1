@@ -21,6 +21,9 @@ from ...constants import PayoutStates
 async def request_payout_user(update: Update,
                               context: ContextTypes.DEFAULT_TYPE) -> int:
     user_id = str(update.effective_user.id)
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     log(f"DEBUG [request_payout_user] Запрос выплаты от user_id: {user_id}")
     users = load_users_map()
     if user_id not in users:

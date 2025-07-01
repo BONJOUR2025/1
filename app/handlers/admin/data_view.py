@@ -13,6 +13,9 @@ from ...utils.logger import log
 
 
 async def view_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     keyboard = [["📅 Расписание", "💰 Зарплаты"], ["🏠 Домой"]]
     reply_markup = ReplyKeyboardMarkup(
         keyboard, resize_keyboard=True, one_time_keyboard=False

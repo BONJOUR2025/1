@@ -19,6 +19,9 @@ from ...utils.logger import log
 async def manual_payout_start(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ):
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     users = load_users_map()
     employee_names = sorted(
         {u.get("name") for u in users.values() if u.get("name")}

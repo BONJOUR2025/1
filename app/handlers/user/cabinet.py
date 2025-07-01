@@ -18,6 +18,9 @@ from ...utils.logger import log
 async def personal_cabinet(
         update: Update,
         context: ContextTypes.DEFAULT_TYPE) -> None:
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     user_id = str(update.effective_user.id)
     users = load_users_map()
     user = users.get(user_id)
