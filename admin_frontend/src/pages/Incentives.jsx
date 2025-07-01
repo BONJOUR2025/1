@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../api';
 
 export default function Incentives() {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+
   const emptyForm = {
     id: null,
     employee_id: '',
@@ -9,20 +13,28 @@ export default function Incentives() {
     type: 'bonus',
     amount: '',
     reason: '',
-    date: '',
+    date: new Date().toISOString().slice(0, 10),
     added_by: 'admin',
   };
 
   const [list, setList] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [filters, setFilters] = useState({ employee: '', type: '', from: '', to: '' });
+  const [filters, setFilters] = useState({
+    employee: query.get('employee_id') || '',
+    type: query.get('type') || '',
+    from: query.get('date_from') || '',
+    to: query.get('date_to') || '',
+  });
   const [form, setForm] = useState(emptyForm);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    load();
     loadEmployees();
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [filters]);
 
   async function loadEmployees() {
     try {
@@ -86,6 +98,7 @@ export default function Incentives() {
   }
 
   const rowColor = (type) => (type === 'bonus' ? 'bg-green-50' : 'bg-red-50');
+  const typeLabel = (t) => (t === 'bonus' ? '💰 Премия' : '⚠️ Штраф');
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -149,7 +162,9 @@ export default function Incentives() {
               <tr key={item.id} className={rowColor(item.type)}>
                 <td className="px-4 py-2">{item.name}</td>
                 <td className="px-4 py-2">{item.date}</td>
-                <td className="px-4 py-2">{item.type === 'bonus' ? 'Премия' : 'Штраф'}</td>
+                <td className="px-4 py-2 font-medium">
+                  {typeLabel(item.type)}
+                </td>
                 <td className="px-4 py-2">{item.amount} ₽</td>
                 <td className="px-4 py-2">{item.reason}</td>
                 <td className="px-4 py-2">{item.added_by}</td>
