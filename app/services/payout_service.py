@@ -158,3 +158,94 @@ class PayoutService:
             before_date=to_date,
             filename=filename,
         )
+
+    async def list_control(
+        self,
+        date_from: Optional[str] = None,
+        date_to: Optional[str] = None,
+        payout_type: Optional[str] = None,
+        method: Optional[str] = None,
+        employee_id: Optional[str] = None,
+        department: Optional[str] = None,
+        status: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
+        from datetime import datetime, timedelta
+        from app.config import MAX_ADVANCE_AMOUNT_PER_MONTH
+        from app.services.users import load_users_map
+
+        all_rows = self._repo.load_all()
+        rows = self._repo.list(
+            employee_id,
+            payout_type,
+            status,
+            method,
+            date_from,
+            date_to,
+        )
+        users = load_users_map()
+        now = datetime.now()
+        result: List[Dict[str, Any]] = []
+
+        for item in rows:
+            uid = str(item.get("user_id"))
+            ts_str = item.get("timestamp")
+            ts = None
+            if ts_str:
+                try:
+                    ts = datetime.strptime(ts_str, "%Y-%m-%d %H:%M:%S")
+                except Exception:
+                    pass
+            user = users.get(uid, {})
+            is_active = user.get("status", "active") == "active"
+            warnings: list[str] = []
+
+            # monthly total
+            monthly_total = 0.0
+            prev_count = 0
+            for r in all_rows:
+                if str(r.get("user_id")) != uid:
+                    continue
+                r_ts_str = r.get("timestamp")
+                if not r_ts_str:
+                    continue
+                try:
+                    r_ts = datetime.strptime(r_ts_str, "%Y-%m-%d %H:%M:%S")
+                except Exception:
+                    continue
+                if ts and r_ts.year == ts.year and r_ts.month == ts.month:
+                    monthly_total += float(r.get("amount") or 0)
+                if ts and 0 < (ts - r_ts).total_seconds() <= 3 * 24 * 3600:
+                    prev_count += 1
+
+            if monthly_total > MAX_ADVANCE_AMOUNT_PER_MONTH:
+                warnings.append("limit_exceeded")
+            if item.get("status") in ("pending", "Ожидает") and ts:
+                if now - ts > timedelta(hours=48):
+                    warnings.append("pending_too_long")
+            if prev_count > 0:
+                warnings.append("frequent_request")
+            if user and user.get("bank") and item.get("bank") != user.get("bank"):
+                warnings.append("changed_bank_data")
+            if item.get("is_manual"):
+                warnings.append("manual_created")
+            if not is_active:
+                warnings.append("inactive_employee")
+
+            result.append(
+                {
+                    "id": str(item.get("id")),
+                    "name": item.get("name"),
+                    "amount": float(item.get("amount") or 0),
+                    "date": ts_str,
+                    "status": item.get("status"),
+                    "type": item.get("payout_type"),
+                    "method": item.get("method"),
+                    "warnings": warnings,
+                    "is_manual": bool(item.get("is_manual")),
+                    "is_employee_active": is_active,
+                    "previous_requests_count": prev_count,
+                    "previous_total_month": monthly_total,
+                }
+            )
+
+        return result

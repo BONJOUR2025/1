@@ -122,4 +122,24 @@ def create_payout_router(service: PayoutService) -> APIRouter:
             return FileResponse(Path(path), filename=Path(path).name)
         raise HTTPException(status_code=404, detail="No data")
 
+    @router.get("/control")
+    async def payouts_control(
+        date_from: Optional[str] = None,
+        date_to: Optional[str] = None,
+        type: Optional[str] = None,
+        method: Optional[str] = None,
+        employee_id: Optional[str] = None,
+        department: Optional[str] = None,
+        status: Optional[str] = None,
+    ):
+        return await service.list_control(
+            date_from,
+            date_to,
+            type,
+            method,
+            employee_id,
+            department,
+            status,
+        )
+
     return router
