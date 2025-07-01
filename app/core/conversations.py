@@ -58,6 +58,7 @@ from ..handlers.admin import (
     enter_end_date,
     report_select_status,
 )
+from ..handlers.reset import global_reset
 
 
 def invalid_data_type(update, context):
@@ -123,8 +124,8 @@ def build_payout_conversation():
         },
         fallbacks=[
             MessageHandler(
-                filters.Regex(r"^🏠 Домой$") & ~filters.User(ADMIN_ID),
-                home_handler_user,
+                filters.Regex(r"^(🏠 Домой|Назад|Отмена)$") & ~filters.User(ADMIN_ID),
+                global_reset,
             ),
             MessageHandler(
                 filters.Regex(r"^📄 Просмотр ЗП$") & ~filters.User(ADMIN_ID),
@@ -139,6 +140,7 @@ def build_payout_conversation():
                 personal_cabinet,
             ),
         ],
+        per_message=True,
     )
 
 
@@ -202,9 +204,10 @@ def build_admin_conversation():
             ],
         },
         fallbacks=[
-            MessageHandler(filters.Regex("🏠 Домой"), home_callback),
+            MessageHandler(filters.Regex(r"^(🏠 Домой|Назад|Отмена)$"), global_reset),
             CommandHandler("cancel", cancel_payouts),
         ],
+        per_message=True,
     )
 
 
@@ -230,7 +233,10 @@ def build_manual_payout_conversation():
                 CallbackQueryHandler(manual_payout_finalize, pattern="^manual_")
             ],
         },
-        fallbacks=[MessageHandler(filters.Regex("🏠 Домой"), home_callback)],
+        fallbacks=[
+            MessageHandler(filters.Regex(r"^(🏠 Домой|Назад|Отмена)$"), global_reset)
+        ],
+        per_message=True,
     )
 
 
