@@ -11,8 +11,21 @@ RESET_TEXTS = {"🏠 Домой", "Назад", "Отмена"}
 async def global_reset(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Clear all conversation data and return to the main menu."""
     state_data = dict(context.user_data)
-    log(f"🔄 [global_reset] state_data before reset: {state_data}")
+    cleared_states = {}
+
+    # Clean active conversations for this user/chat
+    app = context.application
+    for handler, conversations in app._conversation_handler_conversations.items():
+        key = handler._get_key(update)
+        if key in conversations:
+            cleared_states[handler.name or handler.__class__.__name__] = conversations.pop(key)
+
+    log(
+        f"🔄 [global_reset] state_data before reset: {state_data}, "
+        f"cleared_states: {cleared_states}"
+    )
     context.user_data.clear()
+
     if update.effective_user.id == ADMIN_ID:
         await update.message.reply_text(
             "🏠 Главное меню", reply_markup=get_admin_menu()
