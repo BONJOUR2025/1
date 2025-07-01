@@ -140,6 +140,7 @@ def build_payout_conversation():
                 personal_cabinet,
             ),
         ],
+        per_message=True,
     )
 
 
@@ -206,6 +207,7 @@ def build_admin_conversation():
             MessageHandler(filters.Regex(r"^(🏠 Домой|Назад|Отмена)$"), global_reset),
             CommandHandler("cancel", cancel_payouts),
         ],
+        per_message=True,
     )
 
 
@@ -234,6 +236,7 @@ def build_manual_payout_conversation():
         fallbacks=[
             MessageHandler(filters.Regex(r"^(🏠 Домой|Назад|Отмена)$"), global_reset)
         ],
+        per_message=True,
     )
 
 

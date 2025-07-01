@@ -5,7 +5,7 @@ from ..keyboards.reply_admin import get_admin_menu
 from ..keyboards.reply_user import get_main_menu
 from ..utils.logger import log
 
-RESET_TEXTS = {"🏠 Домой", "Назад", "Отмена"}
+RESET_TEXTS = {"🏠 Домой", "🔙 Назад", "❌ Отмена", "Назад", "Отмена"}
 
 
 async def global_reset(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:

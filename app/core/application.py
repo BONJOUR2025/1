@@ -70,7 +70,7 @@ def register_handlers(app):
     payout_conv_handler = build_payout_conversation()
     admin_conv_handler = build_admin_conversation()
     manual_payout_handler = build_manual_payout_conversation()
-    reset_filter = filters.Regex(r"^(🏠 Домой|Назад|Отмена)$")
+    reset_filter = filters.Regex(r"^(🏠 Домой|🔙 Назад|❌ Отмена)$")
     app.add_handler(MessageHandler(reset_filter, global_reset), group=0)
     app.add_handler(CommandHandler("cancel", global_reset), group=0)
     app.add_handler(
