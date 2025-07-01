@@ -65,6 +65,9 @@ async def handle_broadcast_start(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ):
     """Запускает процесс рассылки."""
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     user_id = update.effective_user.id
     if user_id != ADMIN_ID:
         await update.message.reply_text("❌ У вас нет прав для рассылки.")

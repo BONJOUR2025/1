@@ -71,8 +71,6 @@ def register_handlers(app):
     admin_conv_handler = build_admin_conversation()
     manual_payout_handler = build_manual_payout_conversation()
     reset_filter = filters.Regex(r"^(🏠 Домой|🔙 Назад|❌ Отмена)$")
-    app.add_handler(MessageHandler(reset_filter, global_reset), group=0)
-    app.add_handler(CommandHandler("cancel", global_reset), group=0)
     app.add_handler(
         CommandHandler("start", get_user_info_user, filters=~filters.User(ADMIN_ID))
     )
@@ -86,6 +84,7 @@ def register_handlers(app):
     )
     app.add_handler(payout_conv_handler)
     app.add_handler(admin_conv_handler)
+    app.add_handler(manual_payout_handler)
     app.add_handler(CallbackQueryHandler(allow_payout, pattern=r"^allow_payout_"))
     app.add_handler(CallbackQueryHandler(deny_payout, pattern=r"^deny_payout_"))
     app.add_handler(
@@ -170,14 +169,15 @@ def register_handlers(app):
             "reset_payout", reset_payout_request, filters=filters.User(ADMIN_ID)
         )
     )
+    app.add_handler(MessageHandler(reset_filter, global_reset), group=0)
+    app.add_handler(CommandHandler("cancel", global_reset), group=0)
+    app.add_handler(CallbackQueryHandler(mark_sent, pattern=r"^mark_sent_"))
+    app.add_handler(CallbackQueryHandler(handle_acknowledgment, pattern=r"^ack_"))
     app.add_handler(
         MessageHandler(
             filters.TEXT & ~filters.COMMAND & ~filters.User(ADMIN_ID), save_new_value
         )
     )
-    app.add_handler(CallbackQueryHandler(mark_sent, pattern=r"^mark_sent_"))
-    app.add_handler(CallbackQueryHandler(handle_acknowledgment, pattern=r"^ack_"))
-    app.add_handler(manual_payout_handler)
     app.add_error_handler(error_handler)
 
 

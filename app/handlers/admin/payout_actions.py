@@ -231,6 +231,9 @@ async def deny_payout(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 async def reset_payout_request(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     user_id = update.effective_user.id
     if user_id != ADMIN_ID:
         await update.message.reply_text("❌ У вас нет прав для выполнения этой команды.")

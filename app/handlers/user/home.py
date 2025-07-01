@@ -26,9 +26,12 @@ async def get_user_info_user(update: Update,
 
 async def home_handler_user(update: Update,
                             context: ContextTypes.DEFAULT_TYPE) -> int:
+    chat_id = update.effective_chat.id
+    state = context.application.chat_data.get(chat_id, {}).get("conversation")
+    log(f"[FSM] state before entry: {state}")
     log(
-        f"DEBUG [home_handler] Получено сообщение: '{
-            update.message.text if update.message else ''}'")
+        f"DEBUG [home_handler] Получено сообщение: '{update.message.text if update.message else ''}'"
+    )
     context.user_data.clear()
     if update.message:
         await update.message.reply_text(
