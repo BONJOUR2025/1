@@ -72,59 +72,62 @@ export default function PayoutsControl() {
       </h2>
       <div className="flex flex-wrap gap-2 items-end">
         <select
-          className="border p-2"
+          className="border border-gray-300 p-2 rounded text-sm"
           value={filters.type}
           onChange={(e) => setFilters({ ...filters, type: e.target.value })}
         >
           <option value="">Все типы</option>
-          <option value="advance">advance</option>
-          <option value="final">final</option>
-          <option value="compensation">compensation</option>
+          <option value="advance">Аванс</option>
+          <option value="final">Финальная</option>
+          <option value="compensation">Компенсация</option>
         </select>
         <select
-          className="border p-2"
+          className="border border-gray-300 p-2 rounded text-sm"
           value={filters.status}
           onChange={(e) => setFilters({ ...filters, status: e.target.value })}
         >
           <option value="">Все статусы</option>
-          <option value="pending">pending</option>
-          <option value="approved">approved</option>
-          <option value="rejected">rejected</option>
+          <option value="pending">Ожидает</option>
+          <option value="approved">Одобрено</option>
+          <option value="rejected">Отказано</option>
         </select>
         <select
-          className="border p-2"
+          className="border border-gray-300 p-2 rounded text-sm"
           value={filters.method}
           onChange={(e) => setFilters({ ...filters, method: e.target.value })}
         >
           <option value="">Все способы</option>
-          <option value="card">card</option>
-          <option value="cash">cash</option>
-          <option value="account">account</option>
+          <option value="card">На карту</option>
+          <option value="cash">Наличными</option>
+          <option value="account">На счёт</option>
         </select>
         <input
           type="date"
-          className="border p-2"
+          className="border border-gray-300 p-2 rounded text-sm"
           value={filters.from}
           onChange={(e) => setFilters({ ...filters, from: e.target.value })}
         />
         <input
           type="date"
-          className="border p-2"
+          className="border border-gray-300 p-2 rounded text-sm"
           value={filters.to}
           onChange={(e) => setFilters({ ...filters, to: e.target.value })}
         />
-        <button className="bg-blue-600 text-white px-3 py-2 rounded" onClick={load}>
+        <button
+          className="bg-blue-600 text-white px-3 py-2 rounded"
+          onClick={load}
+        >
           Применить
         </button>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 border border-gray-300 rounded p-2 bg-gray-50 text-xs">
           {Object.keys(warningDescriptions).map((w) => (
-            <label key={w} className="text-xs flex items-center gap-1">
+            <label key={w} className="flex items-center gap-1">
               <input
                 type="checkbox"
                 checked={filters.warnings.includes(w)}
                 onChange={() => toggleWarning(w)}
               />
-              {w}
+              {warningDescriptions[w]}
             </label>
           ))}
         </div>
