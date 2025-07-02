@@ -76,9 +76,37 @@ class FileResponse(Response):
         self.path = path
         self.filename = filename
 class FastAPI:
-    def __init__(self):
+    def __init__(
+        self,
+        title: str | None = None,
+        docs_url: str | None = "/docs",
+        redoc_url: str | None = "/redoc",
+        openapi_url: str | None = "/openapi.json",
+    ):
         self.routes = []
         self.event_handlers = {}
+        self.title = title
+        self.docs_url = docs_url
+        self.redoc_url = redoc_url
+        self.openapi_url = openapi_url
+
+        if self.docs_url is not None:
+            def docs():
+                return HTMLResponse("<h1>API Docs</h1>")
+
+            self.routes.append(("GET", self.docs_url, docs))
+
+        if self.redoc_url is not None:
+            def redoc():
+                return HTMLResponse("<h1>ReDoc</h1>")
+
+            self.routes.append(("GET", self.redoc_url, redoc))
+
+        if self.openapi_url is not None:
+            def openapi():
+                return Response("{}", media_type="application/json")
+
+            self.routes.append(("GET", self.openapi_url, openapi))
 
     async def __call__(self, scope, receive, send):
         """Minimal ASGI callable so tests can run under Uvicorn."""

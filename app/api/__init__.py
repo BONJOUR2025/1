@@ -26,7 +26,12 @@ from .birthdays import create_birthday_router
 
 
 def create_app() -> FastAPI:
-    app = FastAPI()
+    app = FastAPI(
+        title="Telegram Bot API",
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_url="/openapi.json",
+    )
 
     telegram_app = None
     if TOKEN and TOKEN != "dummy":
