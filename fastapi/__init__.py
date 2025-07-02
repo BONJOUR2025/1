@@ -39,6 +39,10 @@ class UploadFile:
     async def read(self):
         return self._bytes
 
+def Query(default=None, **kwargs):
+    """Return default value for dependency injection stubs."""
+    return default
+
 class Response:
     pass
 
