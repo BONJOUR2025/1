@@ -95,6 +95,8 @@ class FastAPI:
             for m, p, fn in self.routes:
                 if m == method and p == path:
                     result = fn()
+                    if inspect.iscoroutine(result):
+                        result = await result
                     body = getattr(result, "content", b"OK")
                     if isinstance(body, str):
                         body = body.encode()
