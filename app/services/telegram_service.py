@@ -29,7 +29,10 @@ if not logger.handlers:
 class TelegramService:
     def __init__(self, repo: EmployeeRepository) -> None:
         self.repo = repo
-        self.bot = Bot(token=TOKEN)
+        if TOKEN and TOKEN != "dummy":
+            self.bot = Bot(token=TOKEN)
+        else:
+            self.bot = None
         Path("logs").mkdir(exist_ok=True)
         self.msg_log = Path("logs/sent_messages.json")
         if not self.msg_log.exists():

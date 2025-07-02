@@ -20,10 +20,20 @@ class APIRouter:
             self.routes.append(('POST', self.prefix + path, fn))
             return fn
         return decorator
+    def put(self, path: str, **kwargs):
+        def decorator(fn):
+            self.routes.append(('PUT', self.prefix + path, fn))
+            return fn
+        return decorator
 
     def patch(self, path: str, **kwargs):
         def decorator(fn):
             self.routes.append(('PATCH', self.prefix + path, fn))
+            return fn
+        return decorator
+    def delete(self, path: str, **kwargs):
+        def decorator(fn):
+            self.routes.append(('DELETE', self.prefix + path, fn))
             return fn
         return decorator
 
@@ -39,6 +49,10 @@ class UploadFile:
     async def read(self):
         return self._bytes
 
+class Form:
+    def __init__(self, default=None, **kwargs):
+        self.default = default
+
 def Query(default=None, **kwargs):
     """Return default value for dependency injection stubs."""
     return default
@@ -53,19 +67,43 @@ class FileResponse(Response):
 class FastAPI:
     def __init__(self):
         self.routes = []
-    def get(self, path: str):
+        self.event_handlers = {}
+    def get(self, path: str, **kwargs):
         def decorator(fn):
             self.routes.append(('GET', path, fn))
             return fn
         return decorator
-    def post(self, path: str):
+    def post(self, path: str, **kwargs):
         def decorator(fn):
             self.routes.append(('POST', path, fn))
+            return fn
+        return decorator
+    def put(self, path: str, **kwargs):
+        def decorator(fn):
+            self.routes.append(('PUT', path, fn))
+            return fn
+        return decorator
+    def patch(self, path: str, **kwargs):
+        def decorator(fn):
+            self.routes.append(('PATCH', path, fn))
+            return fn
+        return decorator
+    def delete(self, path: str, **kwargs):
+        def decorator(fn):
+            self.routes.append(('DELETE', path, fn))
             return fn
         return decorator
     def include_router(self, router, prefix=''):
         for method, path, fn in getattr(router, 'routes', []):
             self.routes.append((method, prefix + path, fn))
+    def mount(self, path: str, app, name: str = None):
+        # store mount info without real mounting logic
+        self.routes.append(('MOUNT', path, app))
+    def on_event(self, event: str):
+        def decorator(fn):
+            self.event_handlers.setdefault(event, []).append(fn)
+            return fn
+        return decorator
 
 class Request:
     pass
@@ -75,7 +113,7 @@ class HTMLResponse(Response):
         self.content = content
 
 class StaticFiles:
-    def __init__(self, directory: str, name: str = None):
+    def __init__(self, directory: str, name: str = None, **kwargs):
         self.directory = directory
         self.name = name
 
