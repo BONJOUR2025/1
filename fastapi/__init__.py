@@ -169,13 +169,20 @@ class FastAPI:
                     status = result.status_code
                     headers = [(b"content-type", result.media_type.encode())]
                 else:
-                    body = getattr(result, "content", result)
-                    if isinstance(body, bytes):
-                        pass
-                    elif isinstance(body, str):
-                        body = body.encode()
+                    body_content = getattr(result, "content", result)
+                    if isinstance(body_content, bytes):
+                        body = body_content
+                    elif isinstance(body_content, str):
+                        body = body_content.encode()
                     else:
-                        body = json.dumps(body).encode()
+                        def to_serializable(obj):
+                            if hasattr(obj, "model_dump"):
+                                return obj.model_dump()
+                            if hasattr(obj, "__dict__"):
+                                return obj.__dict__
+                            return str(obj)
+
+                        body = json.dumps(body_content, default=to_serializable).encode()
                         headers = [(b"content-type", b"application/json")]
                 await send({
                     "type": "http.response.start",
@@ -239,7 +246,14 @@ class HTMLResponse(Response):
 class JSONResponse(Response):
     def __init__(self, content, status_code: int = 200):
         if not isinstance(content, (str, bytes, bytearray)):
-            content = json.dumps(content)
+            def to_serializable(obj):
+                if hasattr(obj, "model_dump"):
+                    return obj.model_dump()
+                if hasattr(obj, "__dict__"):
+                    return obj.__dict__
+                return str(obj)
+
+            content = json.dumps(content, default=to_serializable)
         super().__init__(content, status_code=status_code,
                          media_type="application/json")
 
