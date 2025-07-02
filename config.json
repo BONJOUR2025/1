@@ -1,0 +1,31 @@
+{
+  "company_name": "My Company",
+  "default_currency": "₽",
+  "timezone": "Europe/Moscow",
+  "logo": "",
+  "max_advance_amount_per_month": 20000,
+  "payout_types": ["Аванс", "Оклад", "Премия", "Штраф"],
+  "payout_statuses": [
+    { "label": "Ожидает", "color": "#FFC107" },
+    { "label": "Утверждён", "color": "#4CAF50" },
+    { "label": "Отклонён", "color": "#F44336" }
+  ],
+  "payout_methods": ["На карту", "Наличными", "Безналично"],
+  "telegram_bot_token": "dummy",
+  "admin_id": 0,
+  "admin_chat_id": 0,
+  "card_dispatch_chat_id": 0,
+  "welcome_message": "",
+  "birthday_reminder_enabled": true,
+  "birthday_reminder_time": "10:30",
+  "send_reminders_to": [],
+  "pdf_font": "",
+  "pdf_date_format": "DD.MM.YYYY",
+  "show_excel_comments": false,
+  "excel_file_path": "data.xlsx",
+  "users_file_path": "user.json",
+  "font_path": "fonts/DejaVuSans.ttf",
+  "advance_requests_file_path": "advance_requests.json",
+  "adjustments_file_path": "adjustments.json",
+  "vacations_file_path": "vacations.json"
+}

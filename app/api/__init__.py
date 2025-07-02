@@ -88,6 +88,11 @@ def create_app() -> FastAPI:
     message_service = MessageService(employee_repo=employee_service._repo)
     app.include_router(create_message_router(message_service), prefix="/api")
 
+    from .config import create_config_router
+    from ..services.config_service import ConfigService
+    config_service = ConfigService()
+    app.include_router(create_config_router(config_service), prefix="/api")
+
     from .analytics import create_analytics_router
     analytics_service = AnalyticsService()
     app.include_router(create_analytics_router(analytics_service), prefix="/api")
