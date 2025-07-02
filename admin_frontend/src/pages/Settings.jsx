@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import api from '../api';
 
 export default function Settings() {
+  const [loaded, setLoaded] = useState(false);
   const { register, handleSubmit, reset } = useForm({ defaultValues: {} });
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function Settings() {
         payout_methods: (data.payout_methods || []).join(', '),
         send_reminders_to: (data.send_reminders_to || []).join(', '),
       });
+      setLoaded(true);
     } catch (err) {
       console.error(err);
     }
@@ -54,6 +56,10 @@ export default function Settings() {
     formData.append('file', file);
     await api.post('config/upload/', formData);
     load();
+  }
+
+  if (!loaded) {
+    return <p className="text-center">Загрузка...</p>;
   }
 
   return (
