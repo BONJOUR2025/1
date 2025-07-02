@@ -22,6 +22,11 @@ class APIRouter:
             self.routes.append(('POST', self.prefix + path, fn))
             return fn
         return decorator
+    def head(self, path: str, **kwargs):
+        def decorator(fn):
+            self.routes.append(('HEAD', self.prefix + path, fn))
+            return fn
+        return decorator
     def put(self, path: str, **kwargs):
         def decorator(fn):
             self.routes.append(('PUT', self.prefix + path, fn))
@@ -140,7 +145,7 @@ class FastAPI:
             path = scope.get("path")
             method = scope.get("method")
             for m, p, fn in self.routes:
-                if m != method:
+                if m != method and not (method == 'HEAD' and m == 'GET'):
                     continue
                 match = False
                 kwargs = {}
@@ -189,14 +194,17 @@ class FastAPI:
                     "status": status,
                     "headers": headers,
                 })
-                await send({"type": "http.response.body", "body": body})
+                if method != 'HEAD':
+                    await send({"type": "http.response.body", "body": body})
+                else:
+                    await send({"type": "http.response.body", "body": b''})
                 return
             await send({
                 "type": "http.response.start",
                 "status": 404,
                 "headers": [(b"content-type", b"text/plain")],
             })
-            await send({"type": "http.response.body", "body": b"Not Found"})
+            await send({"type": "http.response.body", "body": b"" if method == 'HEAD' else b"Not Found"})
             return
     def get(self, path: str, **kwargs):
         def decorator(fn):
@@ -206,6 +214,11 @@ class FastAPI:
     def post(self, path: str, **kwargs):
         def decorator(fn):
             self.routes.append(('POST', path, fn))
+            return fn
+        return decorator
+    def head(self, path: str, **kwargs):
+        def decorator(fn):
+            self.routes.append(('HEAD', path, fn))
             return fn
         return decorator
     def put(self, path: str, **kwargs):
