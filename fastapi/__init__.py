@@ -130,30 +130,43 @@ class FastAPI:
             path = scope.get("path")
             method = scope.get("method")
             for m, p, fn in self.routes:
-                if m == method and p == path:
-                    result = fn()
-                    if inspect.iscoroutine(result):
-                        result = await result
-                    status = 200
-                    body = b""
-                    headers = [(b"content-type", b"text/plain")]
-                    if isinstance(result, Response):
-                        body = result.content
-                        if isinstance(body, str):
-                            body = body.encode()
-                        status = result.status_code
-                        headers = [(b"content-type", result.media_type.encode())]
-                    else:
-                        body = getattr(result, "content", result)
-                        if isinstance(body, str):
-                            body = body.encode()
-                    await send({
-                        "type": "http.response.start",
-                        "status": status,
-                        "headers": headers,
-                    })
-                    await send({"type": "http.response.body", "body": body})
-                    return
+                if m != method:
+                    continue
+                match = False
+                kwargs = {}
+                if p == path:
+                    match = True
+                elif p in ("/{full_path:path}", "/{path:path}"):
+                    match = True
+                    if 'full_path' in inspect.signature(fn).parameters:
+                        kwargs['full_path'] = path.lstrip('/')
+                    if 'path' in inspect.signature(fn).parameters:
+                        kwargs['path'] = path.lstrip('/')
+                if not match:
+                    continue
+                result = fn(**kwargs)
+                if inspect.iscoroutine(result):
+                    result = await result
+                status = 200
+                body = b""
+                headers = [(b"content-type", b"text/plain")]
+                if isinstance(result, Response):
+                    body = result.content
+                    if isinstance(body, str):
+                        body = body.encode()
+                    status = result.status_code
+                    headers = [(b"content-type", result.media_type.encode())]
+                else:
+                    body = getattr(result, "content", result)
+                    if isinstance(body, str):
+                        body = body.encode()
+                await send({
+                    "type": "http.response.start",
+                    "status": status,
+                    "headers": headers,
+                })
+                await send({"type": "http.response.body", "body": body})
+                return
             await send({
                 "type": "http.response.start",
                 "status": 404,
