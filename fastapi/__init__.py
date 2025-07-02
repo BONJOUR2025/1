@@ -70,6 +70,7 @@ class Response:
         self.headers = headers
 
 import mimetypes
+import json
 
 class FileResponse(Response):
     def __init__(self, path, filename=None, status_code: int = 200):
@@ -169,8 +170,13 @@ class FastAPI:
                     headers = [(b"content-type", result.media_type.encode())]
                 else:
                     body = getattr(result, "content", result)
-                    if isinstance(body, str):
+                    if isinstance(body, bytes):
+                        pass
+                    elif isinstance(body, str):
                         body = body.encode()
+                    else:
+                        body = json.dumps(body).encode()
+                        headers = [(b"content-type", b"application/json")]
                 await send({
                     "type": "http.response.start",
                     "status": status,
@@ -230,6 +236,13 @@ class HTMLResponse(Response):
         super().__init__(content, status_code=status_code,
                          media_type="text/html")
 
+class JSONResponse(Response):
+    def __init__(self, content, status_code: int = 200):
+        if not isinstance(content, (str, bytes, bytearray)):
+            content = json.dumps(content)
+        super().__init__(content, status_code=status_code,
+                         media_type="application/json")
+
 class StaticFiles:
     def __init__(self, directory: str, name: str = None, **kwargs):
         self.directory = directory
@@ -244,6 +257,7 @@ responses = types.ModuleType(__name__ + '.responses')
 responses.Response = Response
 responses.HTMLResponse = HTMLResponse
 responses.FileResponse = FileResponse
+responses.JSONResponse = JSONResponse
 sys.modules[__name__ + '.responses'] = responses
 
 staticfiles = types.ModuleType(__name__ + '.staticfiles')
