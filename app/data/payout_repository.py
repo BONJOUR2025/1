@@ -7,9 +7,12 @@ from app.config import ADVANCE_REQUESTS_FILE
 from app.utils.logger import log
 
 
+DEFAULT_ADVANCE_REQUESTS_FILE = "advance_requests.json"
+
+
 class PayoutRepository:
     def __init__(self, file_path: Optional[str] = None) -> None:
-        self._file = file_path or ADVANCE_REQUESTS_FILE
+        self._file = file_path or ADVANCE_REQUESTS_FILE or DEFAULT_ADVANCE_REQUESTS_FILE
         log(f"📂 Loading payouts from {self._file}")
         self._data: List[Dict[str, Any]] = self._load()
         log(f"✅ Loaded payouts: {len(self._data)}")
@@ -29,8 +32,10 @@ class PayoutRepository:
             self._save()
 
     def _load(self) -> List[Dict[str, Any]]:
-        if not os.path.exists(self._file):
-            example = self._file.replace(".json", ".example.json")
+        if not self._file or not os.path.exists(self._file):
+            example = (
+                self._file.replace(".json", ".example.json") if self._file else "advance_requests.example.json"
+            )
             if os.path.exists(example):
                 log(f"⚠️ {self._file} not found. Using example {example}")
                 try:

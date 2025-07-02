@@ -3,12 +3,14 @@ import os
 from typing import List, Dict, Any, Optional
 
 from app.config import BONUSES_PENALTIES_FILE
+
+DEFAULT_INCENTIVES_FILE = "bonuses_penalties.json"
 from app.utils.logger import log
 
 
 class IncentiveRepository:
     def __init__(self, file_path: Optional[str] = None) -> None:
-        self._file = file_path or BONUSES_PENALTIES_FILE
+        self._file = file_path or BONUSES_PENALTIES_FILE or DEFAULT_INCENTIVES_FILE
         log(f"📂 Loading incentives from {self._file}")
         self._data: List[Dict[str, Any]] = self._load()
         log(f"✅ Loaded incentives: {len(self._data)}")
@@ -18,8 +20,10 @@ class IncentiveRepository:
         )
 
     def _load(self) -> List[Dict[str, Any]]:
-        if not os.path.exists(self._file):
-            example = self._file.replace('.json', '.example.json')
+        if not self._file or not os.path.exists(self._file):
+            example = (
+                self._file.replace('.json', '.example.json') if self._file else 'bonuses_penalties.example.json'
+            )
             if os.path.exists(example):
                 log(f"⚠️ {self._file} not found. Using example {example}")
                 try:
@@ -40,7 +44,9 @@ class IncentiveRepository:
             log(f"❌ Failed reading {self._file}: {e}")
             data = []
         if not data:
-            example = self._file.replace('.json', '.example.json')
+            example = (
+                self._file.replace('.json', '.example.json') if self._file else 'bonuses_penalties.example.json'
+            )
             if os.path.exists(example):
                 try:
                     log(f"⚠️ Using example {example}")
