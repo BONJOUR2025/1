@@ -122,7 +122,7 @@ def create_app() -> FastAPI:
         async def spa_fallback(full_path: str, request: Request):
             index_path = frontend_path / "index.html"
             if index_path.exists():
-                return FileResponse(str(index_path))
+                return HTMLResponse(index_path.read_text())
             return Response(status_code=404)
 
     if telegram_app is not None:
