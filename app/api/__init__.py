@@ -120,6 +120,9 @@ def create_app() -> FastAPI:
     if frontend_path.exists():
         @app.get("/{full_path:path}", include_in_schema=False)
         async def spa_fallback(full_path: str, request: Request):
+            file_path = frontend_path / full_path
+            if file_path.is_file():
+                return FileResponse(str(file_path))
             index_path = frontend_path / "index.html"
             if index_path.exists():
                 return HTMLResponse(index_path.read_text())
