@@ -144,6 +144,8 @@ class FastAPI:
                         kwargs['path'] = path.lstrip('/')
                 if not match:
                     continue
+                if 'request' in inspect.signature(fn).parameters:
+                    kwargs['request'] = Request()
                 result = fn(**kwargs)
                 if inspect.iscoroutine(result):
                     result = await result
