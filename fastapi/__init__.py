@@ -76,3 +76,28 @@ class StaticFiles:
         self.name = name
 
 status = type('status', (), {'HTTP_404_NOT_FOUND': 404})
+
+# Expose minimal submodules for compatibility with real FastAPI imports
+import types, sys
+
+responses = types.ModuleType(__name__ + '.responses')
+responses.Response = Response
+responses.HTMLResponse = HTMLResponse
+responses.FileResponse = FileResponse
+sys.modules[__name__ + '.responses'] = responses
+
+staticfiles = types.ModuleType(__name__ + '.staticfiles')
+staticfiles.StaticFiles = StaticFiles
+sys.modules[__name__ + '.staticfiles'] = staticfiles
+
+templating = types.ModuleType(__name__ + '.templating')
+
+class Jinja2Templates:
+    def __init__(self, directory: str):
+        self.directory = directory
+
+    def TemplateResponse(self, name: str, context: dict):
+        return HTMLResponse(f"Rendered {name}")
+
+templating.Jinja2Templates = Jinja2Templates
+sys.modules[__name__ + '.templating'] = templating
