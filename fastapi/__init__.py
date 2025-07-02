@@ -60,10 +60,19 @@ def Query(default=None, **kwargs):
     return default
 
 class Response:
-    pass
+    def __init__(self, content: bytes | str = b"", status_code: int = 200,
+                 media_type: str = "text/plain", headers=None):
+        if headers is None:
+            headers = []
+        self.content = content
+        self.status_code = status_code
+        self.media_type = media_type
+        self.headers = headers
 
 class FileResponse(Response):
-    def __init__(self, path, filename=None):
+    def __init__(self, path, filename=None, status_code: int = 200):
+        super().__init__(b"", status_code=status_code,
+                         media_type="application/octet-stream")
         self.path = path
         self.filename = filename
 class FastAPI:
@@ -97,13 +106,23 @@ class FastAPI:
                     result = fn()
                     if inspect.iscoroutine(result):
                         result = await result
-                    body = getattr(result, "content", b"OK")
-                    if isinstance(body, str):
-                        body = body.encode()
+                    status = 200
+                    body = b""
+                    headers = [(b"content-type", b"text/plain")]
+                    if isinstance(result, Response):
+                        body = result.content
+                        if isinstance(body, str):
+                            body = body.encode()
+                        status = result.status_code
+                        headers = [(b"content-type", result.media_type.encode())]
+                    else:
+                        body = getattr(result, "content", result)
+                        if isinstance(body, str):
+                            body = body.encode()
                     await send({
                         "type": "http.response.start",
-                        "status": 200,
-                        "headers": [(b"content-type", b"text/plain")],
+                        "status": status,
+                        "headers": headers,
                     })
                     await send({"type": "http.response.body", "body": body})
                     return
@@ -155,8 +174,9 @@ class Request:
     pass
 
 class HTMLResponse(Response):
-    def __init__(self, content):
-        self.content = content
+    def __init__(self, content: str, status_code: int = 200):
+        super().__init__(content, status_code=status_code,
+                         media_type="text/html")
 
 class StaticFiles:
     def __init__(self, directory: str, name: str = None, **kwargs):
