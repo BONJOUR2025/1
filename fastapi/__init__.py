@@ -69,10 +69,19 @@ class Response:
         self.media_type = media_type
         self.headers = headers
 
+import mimetypes
+
 class FileResponse(Response):
     def __init__(self, path, filename=None, status_code: int = 200):
-        super().__init__(b"", status_code=status_code,
-                         media_type="application/octet-stream")
+        content_type, _ = mimetypes.guess_type(str(path))
+        if content_type is None:
+            content_type = "application/octet-stream"
+        try:
+            with open(path, "rb") as f:
+                data = f.read()
+        except FileNotFoundError:
+            data = b""
+        super().__init__(data, status_code=status_code, media_type=content_type)
         self.path = path
         self.filename = filename
 class FastAPI:
