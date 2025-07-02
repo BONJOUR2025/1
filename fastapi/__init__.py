@@ -1,3 +1,5 @@
+import inspect
+
 class HTTPException(Exception):
     def __init__(self, status_code: int, detail: str):
         self.status_code = status_code
@@ -68,6 +70,48 @@ class FastAPI:
     def __init__(self):
         self.routes = []
         self.event_handlers = {}
+
+    async def __call__(self, scope, receive, send):
+        """Minimal ASGI callable so tests can run under Uvicorn."""
+        if scope["type"] == "lifespan":
+            while True:
+                message = await receive()
+                if message["type"] == "lifespan.startup":
+                    for fn in self.event_handlers.get("startup", []):
+                        result = fn()
+                        if inspect.iscoroutine(result):
+                            await result
+                    await send({"type": "lifespan.startup.complete"})
+                elif message["type"] == "lifespan.shutdown":
+                    for fn in self.event_handlers.get("shutdown", []):
+                        result = fn()
+                        if inspect.iscoroutine(result):
+                            await result
+                    await send({"type": "lifespan.shutdown.complete"})
+                    return
+        elif scope["type"] == "http":
+            path = scope.get("path")
+            method = scope.get("method")
+            for m, p, fn in self.routes:
+                if m == method and p == path:
+                    result = fn()
+                    body = getattr(result, "content", b"OK")
+                    if isinstance(body, str):
+                        body = body.encode()
+                    await send({
+                        "type": "http.response.start",
+                        "status": 200,
+                        "headers": [(b"content-type", b"text/plain")],
+                    })
+                    await send({"type": "http.response.body", "body": body})
+                    return
+            await send({
+                "type": "http.response.start",
+                "status": 404,
+                "headers": [(b"content-type", b"text/plain")],
+            })
+            await send({"type": "http.response.body", "body": b"Not Found"})
+            return
     def get(self, path: str, **kwargs):
         def decorator(fn):
             self.routes.append(('GET', path, fn))
