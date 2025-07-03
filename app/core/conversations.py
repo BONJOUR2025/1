@@ -75,7 +75,7 @@ def build_payout_conversation():
     return ConversationHandler(
         entry_points=[
             MessageHandler(
-                filters.Regex(r"^💰 Запросить выплату$") & ~filters.User(ADMIN_ID),
+                filters.Text(["💰 Запросить выплату"]) & ~filters.User(ADMIN_ID),
                 request_payout_user,
             ),
             MessageHandler(
