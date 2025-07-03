@@ -78,7 +78,7 @@ class PayoutService:
         if update.status is not None:
             return await self.update_status(payout_id, update.status)
         updated = self._repo.update(
-            payout_id, update.model_dump(
+            payout_id, update.dict(
                 exclude_none=True))
         if updated:
             logger.info(

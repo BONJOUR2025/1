@@ -19,11 +19,11 @@ class IncentiveService:
         return [Incentive(**r) for r in rows]
 
     async def create_incentive(self, data: IncentiveCreate) -> Incentive:
-        created = self._repo.create(data.model_dump())
+        created = self._repo.create(data.dict())
         return Incentive(**created)
 
     async def update_incentive(self, item_id: str, data: IncentiveUpdate) -> Optional[Incentive]:
-        updated = self._repo.update(item_id, data.model_dump(exclude_none=True))
+        updated = self._repo.update(item_id, data.dict(exclude_none=True))
         return Incentive(**updated) if updated else None
 
     async def delete_incentive(self, item_id: str) -> bool:
