@@ -57,7 +57,8 @@ def create_payout_router(service: PayoutService) -> APIRouter:
     async def set_status(payout_id: str, body: PayoutUpdate):
         if body.status is None:
             raise HTTPException(status_code=400, detail="status required")
-        updated = await service.update_status(payout_id, body.status)
+        notify = True if body.notify_user is None else body.notify_user
+        updated = await service.update_status(payout_id, body.status, notify)
         if updated:
             return updated
         raise HTTPException(status_code=404, detail="not found")

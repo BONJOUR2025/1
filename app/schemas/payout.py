@@ -36,6 +36,7 @@ class PayoutUpdate(BaseModel):
     method: Optional[str] = None
     payout_type: Optional[str] = None
     status: Optional[str] = None
+    notify_user: Optional[bool] = None
 
 
 class PayoutControlItem(BaseModel):

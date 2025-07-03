@@ -77,6 +77,7 @@ class PayoutService:
         update: PayoutUpdate,
     ) -> Optional[Payout]:
         updates = update.model_dump(exclude_none=True)
+        notify = updates.pop("notify_user", True)
         if not updates:
             return None
         updated = self._repo.update(payout_id, updates)
@@ -84,7 +85,7 @@ class PayoutService:
             return None
         if "status" in updates:
             # notify user if status has changed
-            if self._telegram:
+            if self._telegram and notify:
                 try:
                     message = {
                         "Одобрено": "✅ Ваша заявка одобрена",
@@ -105,13 +106,15 @@ class PayoutService:
             logger.info(f"✏️ Выплата {payout_id} обновлена")
         return Payout(**updated)
 
-    async def update_status(self, payout_id: str, status: str) -> Optional[Payout]:
+    async def update_status(
+        self, payout_id: str, status: str, notify: bool = True
+    ) -> Optional[Payout]:
         updated = self._repo.update(payout_id, {"status": status})
         if not updated:
             return None
         logger.info(
             f"✏️ Выплата {payout_id} обновлена — статус: {status}")
-        if self._telegram:
+        if self._telegram and notify:
             try:
                 message = {
                     "Одобрено": "✅ Ваша заявка одобрена",

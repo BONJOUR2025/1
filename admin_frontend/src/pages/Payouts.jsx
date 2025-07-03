@@ -82,6 +82,7 @@ export default function Payouts() {
     method: '💳 На карту',
     status: 'Ожидает',
     sync_to_bot: false,
+    notify_user: true,
   };
 
   const [payouts, setPayouts] = useState([]);
@@ -187,7 +188,7 @@ export default function Payouts() {
   }
 
   function openEdit(p) {
-    setForm({ ...p });
+    setForm({ ...p, notify_user: true });
     setShowEditor(true);
   }
 
@@ -502,6 +503,18 @@ export default function Payouts() {
                 <option value="Отказано">Отказано</option>
                 <option value="Выплачен">Выплачен</option>
               </select>
+            )}
+            {form.id && (
+              <label className="flex items-center gap-1 text-sm">
+                <input
+                  type="checkbox"
+                  checked={form.notify_user}
+                  onChange={(e) =>
+                    setForm({ ...form, notify_user: e.target.checked })
+                  }
+                />
+                Уведомить сотрудника
+              </label>
             )}
             <label className="flex items-center gap-1 text-sm">
               <input
