@@ -60,13 +60,13 @@ import datetime
 
 def create_application():
     app = ApplicationBuilder().token(TOKEN).build()
-    register_handlers(app)
+    register_all_handlers(app)
     register_jobs(app)
 
     return app
 
 
-def register_handlers(app):
+def _register_all_handlers(app):
     payout_conv_handler = build_payout_conversation()
     admin_conv_handler = build_admin_conversation()
     manual_payout_handler = build_manual_payout_conversation()
@@ -177,6 +177,25 @@ def register_handlers(app):
         )
     )
     app.add_error_handler(error_handler)
+
+
+def register_admin_handlers(app):
+    """Register admin-specific handlers."""
+    _register_all_handlers(app)
+
+
+def register_user_handlers(app):
+    """Register user handlers (currently included in admin registration)."""
+
+
+def register_fallbacks(app):
+    """Register fallback handlers (currently included in admin registration)."""
+
+
+def register_all_handlers(app):
+    register_admin_handlers(app)
+    register_user_handlers(app)
+    register_fallbacks(app)
 
 
 async def error_handler(update, context):

@@ -1,4 +1,19 @@
-from .settings import settings
+import json
+from pathlib import Path
+
+from .settings import Settings
+
+
+def _load_settings() -> Settings:
+    path = Path("config.json")
+    data = {}
+    if path.exists():
+        data = json.loads(path.read_text(encoding="utf-8"))
+    allowed = {k: v for k, v in data.items() if k in Settings.__annotations__}
+    return Settings(**allowed)
+
+
+settings = _load_settings()
 
 TOKEN = settings.telegram_bot_token
 EXCEL_FILE = settings.excel_file

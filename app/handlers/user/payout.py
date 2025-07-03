@@ -71,6 +71,13 @@ async def request_payout_user(update: Update,
     return PayoutStates.SELECT_TYPE
 
 
+async def request_payout_start(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
+    """Alias for backward compatibility."""
+    return await request_payout_user(update, context)
+
+
 async def handle_payout_type_user(
         update: Update,
         context: ContextTypes.DEFAULT_TYPE):
