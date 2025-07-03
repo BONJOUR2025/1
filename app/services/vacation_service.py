@@ -20,7 +20,7 @@ class VacationService:
 
     async def create_vacation(self, data: VacationCreate) -> Vacation:
         self._validate_dates(data.start_date, data.end_date)
-        created = self._repo.create(data.model_dump())
+        created = self._repo.create(data.dict())
         return Vacation(**created)
 
     async def update_vacation(
@@ -36,7 +36,7 @@ class VacationService:
         start = data.start_date or existing.get("start_date")
         end = data.end_date or existing.get("end_date")
         self._validate_dates(start, end)
-        updated = self._repo.update(vac_id, data.model_dump(exclude_none=True))
+        updated = self._repo.update(vac_id, data.dict(exclude_none=True))
         return Vacation(**updated) if updated else None
 
     async def delete_vacation(self, vac_id: str) -> None:

@@ -34,7 +34,7 @@ def load_requests_dataclass() -> List[Payout]:
 
 def save_requests_dataclass(requests: List[Payout]) -> None:
     for r in requests:
-        _repo.update(r.id, r.model_dump(exclude_none=True))
+        _repo.update(r.id, r.dict(exclude_none=True))
 
 
 def log_new_request(

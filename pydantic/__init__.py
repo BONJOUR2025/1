@@ -23,6 +23,10 @@ class BaseModel:
             data = {k: v for k, v in data.items() if v is not None}
         return data
 
+    def dict(self, *, exclude_none=False):
+        """Alias of ``model_dump`` for compatibility with real pydantic."""
+        return self.model_dump(exclude_none=exclude_none)
+
 
 def Field(default=None, **kwargs):
     return default
