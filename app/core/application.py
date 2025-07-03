@@ -15,7 +15,7 @@ from .conversations import (
 )
 from ..handlers.user import (
     handle_salary_request,
-    get_user_info_user,
+    start,
     home_handler_user,
     handle_selected_month_user,
     view_salary_user,
@@ -71,9 +71,7 @@ def register_handlers(app):
     admin_conv_handler = build_admin_conversation()
     manual_payout_handler = build_manual_payout_conversation()
     reset_filter = filters.Regex(r"^(🏠 Домой|🔙 Назад|❌ Отмена)$")
-    app.add_handler(
-        CommandHandler("start", get_user_info_user, filters=~filters.User(ADMIN_ID))
-    )
+    app.add_handler(CommandHandler("start", start))
     app.add_handler(
         CommandHandler("salary", handle_salary_request, filters=~filters.User(ADMIN_ID))
     )

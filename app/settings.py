@@ -34,7 +34,11 @@ class Settings(BaseSettings):
     secret_key: str = Field("change_me", env="SECRET_KEY")
 
 
-    model_config = SettingsConfigDict(env_file=".env", json_file="config.json")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        json_file="config.json",
+        extra="ignore",
+    )
 
     @classmethod
     def settings_customise_sources(

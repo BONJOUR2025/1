@@ -1,4 +1,4 @@
-from .start import get_user_info_user
+from .start import get_user_info_user, start
 from .home import home_handler_user
 from .menu import (
     view_salary_user,
