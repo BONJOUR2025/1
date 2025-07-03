@@ -37,6 +37,11 @@ uvicorn app.server:app --reload
 The application mounts the compiled React admin interface from the
 `admin_frontend/dist` directory.
 
+## Environment variables
+
+Runtime settings can be adjusted via a `.env` file or system environment
+variables. See `app/settings.py` for available options and default values.
+
 ## Building the admin frontend
 
 Navigate to `admin_frontend` and run:
