@@ -23,7 +23,9 @@ from ...constants import PayoutStates
 
 async def request_payout_user(update: Update,
                               context: ContextTypes.DEFAULT_TYPE) -> int:
-    logger.info(f"▶ Запущен запрос выплаты от {update.effective_user.id}")
+    logger.info(
+        f"▶ Запущен FSM-запрос выплаты от {update.effective_user.id}"
+    )
     user_id = str(update.effective_user.id)
     chat_id = update.effective_chat.id
     state = context.application.chat_data.get(chat_id, {}).get("conversation")

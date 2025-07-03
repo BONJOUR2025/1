@@ -32,7 +32,7 @@ from .cabinet import (
 )
 from .salary import handle_salary_request
 from .ack import handle_acknowledgment
-from app.constants import PayoutStates
+from app.core.types import PayoutStates
 
 
 def register_user_handlers(application):
