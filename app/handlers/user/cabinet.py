@@ -109,12 +109,12 @@ async def save_new_value(
         context: ContextTypes.DEFAULT_TYPE) -> None:
     if context.user_data.get("payout_request"):
         return
+    if not context.user_data.get("awaiting_new_value"):
+        return
     log(
         f"DEBUG [save_new_value] Текст: '{
             update.message.text if update.message else ''}', context.user_data: {
             context.user_data}")
-    if not context.user_data.get("awaiting_new_value"):
-        return
     new_value = update.message.text.strip()
     field = context.user_data.get("edit_field")
     if field == "phone":
