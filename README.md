@@ -10,9 +10,6 @@ Install the project dependencies using pip:
 pip install -r requirements.txt
 ```
 
-Some simplified stub modules (FastAPI, Pydantic, Telegram) live inside this
-repository purely for testing. When running the project in a real environment,
-replace them with the actual packages listed in `requirements.txt`.
 
 ## Fonts
 

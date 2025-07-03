@@ -6,3 +6,4 @@ pillow
 fpdf
 PyPDF2
 python-telegram-bot
+pydantic-settings
