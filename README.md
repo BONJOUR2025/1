@@ -40,7 +40,10 @@ The application mounts the compiled React admin interface from the
 ## Environment variables
 
 Runtime settings can be adjusted via a `.env` file or system environment
-variables. See `app/settings.py` for available options and default values.
+variables. If no environment variable is provided, `config.json` will be read
+for defaults. At minimum set `TELEGRAM_BOT_TOKEN` and `ADMIN_CHAT_ID` so the
+Telegram bot can operate. See `app/settings.py` for all available options and
+default values.
 
 ## Building the admin frontend
 

@@ -1,5 +1,6 @@
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings.sources import JsonConfigSettingsSource
 
 
 class Settings(BaseSettings):
@@ -32,8 +33,25 @@ class Settings(BaseSettings):
         500000000, env="MAX_ADVANCE_AMOUNT_PER_MONTH")
     secret_key: str = Field("change_me", env="SECRET_KEY")
 
-    class Config:
-        env_file = ".env"
+
+    model_config = SettingsConfigDict(env_file=".env", json_file="config.json")
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls,
+        init_settings,
+        env_settings,
+        dotenv_settings,
+        file_secret_settings,
+    ):
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            JsonConfigSettingsSource(settings_cls),
+            file_secret_settings,
+        )
 
 
 settings = Settings()
