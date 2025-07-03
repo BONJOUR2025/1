@@ -72,19 +72,38 @@ class PayoutService:
         return Payout(**created)
 
     async def update_payout(
-            self,
-            payout_id: str,
-            update: PayoutUpdate) -> Optional[Payout]:
-        if update.status is not None:
-            return await self.update_status(payout_id, update.status)
-        updated = self._repo.update(
-            payout_id, update.model_dump(
-                exclude_none=True))
-        if updated:
+        self,
+        payout_id: str,
+        update: PayoutUpdate,
+    ) -> Optional[Payout]:
+        updates = update.model_dump(exclude_none=True)
+        if not updates:
+            return None
+        updated = self._repo.update(payout_id, updates)
+        if not updated:
+            return None
+        if "status" in updates:
+            # notify user if status has changed
+            if self._telegram:
+                try:
+                    message = {
+                        "Одобрено": "✅ Ваша заявка одобрена",
+                        "Отказано": "❌ Ваша заявка отклонена",
+                        "Выплачен": "📤 Выплата отправлена",
+                        "Выплачено": "📤 Выплата отправлена",
+                    }.get(updates["status"])
+                    if message:
+                        await self._telegram.send_message_to_user(
+                            updated["user_id"],
+                            f"{message}\nСумма: {updated['amount']} ₽",
+                        )
+                except Exception as exc:
+                    logger.warning(f"Не удалось уведомить пользователя: {exc}")
             logger.info(
-                f"✏️ Выплата {payout_id} обновлена")
-            return Payout(**updated)
-        return None
+                f"✏️ Выплата {payout_id} обновлена — статус: {updates['status']}")
+        else:
+            logger.info(f"✏️ Выплата {payout_id} обновлена")
+        return Payout(**updated)
 
     async def update_status(self, payout_id: str, status: str) -> Optional[Payout]:
         updated = self._repo.update(payout_id, {"status": status})

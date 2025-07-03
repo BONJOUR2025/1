@@ -491,6 +491,18 @@ export default function Payouts() {
               <option value="🏦 Из кассы">Из кассы</option>
               <option value="🤝 Наличными">Наличными</option>
             </select>
+            {form.id && (
+              <select
+                className="border p-2 w-full"
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value })}
+              >
+                <option value="Ожидает">Ожидает</option>
+                <option value="Одобрено">Одобрено</option>
+                <option value="Отказано">Отказано</option>
+                <option value="Выплачен">Выплачен</option>
+              </select>
+            )}
             <label className="flex items-center gap-1 text-sm">
               <input
                 type="checkbox"
