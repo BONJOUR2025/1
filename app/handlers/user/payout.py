@@ -1,3 +1,4 @@
+import logging
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -15,11 +16,14 @@ from ...services.advance_requests import (
 from ...keyboards.reply_user import get_main_menu
 from ...utils.logger import log
 
+logger = logging.getLogger(__name__)
+
 from ...constants import PayoutStates
 
 
 async def request_payout_user(update: Update,
                               context: ContextTypes.DEFAULT_TYPE) -> int:
+    logger.info(f"▶ Запущен запрос выплаты от {update.effective_user.id}")
     user_id = str(update.effective_user.id)
     chat_id = update.effective_chat.id
     state = context.application.chat_data.get(chat_id, {}).get("conversation")
