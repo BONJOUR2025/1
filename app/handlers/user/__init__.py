@@ -1,5 +1,7 @@
 from telegram.ext import ConversationHandler, MessageHandler, filters
 
+from app.constants import PAYMENT_REQUEST_PATTERN
+
 from .start import get_user_info_user, start
 from .home import home_handler_user
 from .menu import (
@@ -41,7 +43,8 @@ def register_user_handlers(application):
         ConversationHandler(
             entry_points=[
                 MessageHandler(
-                    filters.TEXT & filters.Regex("^💰 Запросить выплату$"),
+                    filters.TEXT
+                    & filters.Regex(PAYMENT_REQUEST_PATTERN),
                     request_payout_user,
                 )
             ],

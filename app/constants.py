@@ -1,4 +1,5 @@
 from enum import Enum, auto
+import re
 
 
 class UserStates(Enum):
@@ -39,3 +40,8 @@ class AdvanceReportStates(Enum):
     ENTER_START_DATE = auto()
     ENTER_END_DATE = auto()
     SELECT_STATUS = auto()
+
+
+PAYMENT_REQUEST_PATTERN = re.compile(
+    r"^[\s\u200b\u200c\uFEFF]*💰[\s\u200b\u200c\uFEFF]*Запросить[\s\u200b\u200c\uFEFF]*выплату[\s\u200b\u200c\uFEFF]*$"
+)
