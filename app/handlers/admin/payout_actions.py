@@ -31,6 +31,8 @@ from ...services.advance_requests import (
 from ...utils.logger import log
 from ...utils import is_valid_user_id
 
+logger = logging.getLogger(__name__)
+
 
 audit_logger = logging.getLogger("payout_actions")
 if not audit_logger.handlers:
@@ -47,24 +49,25 @@ PENDING_STATUSES = {"Ожидает", "В ожидании"}
 async def allow_payout(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     await query.answer()
-    payout_id = query.data.split("_")[-1]
+    payout_id = int(query.data.split("_")[-1])
     log(f"✅ [allow_payout] Одобрение выплаты для payout_id: {payout_id}")
 
-    payout_requests = load_advance_requests()
+    payouts = load_advance_requests()
+    logger.debug(f"[allow_payout] Все ID в базе: {[p['id'] for p in payouts]}")
+
     request_to_approve = next(
-        (
-            r
-            for r in payout_requests
-            if str(r.get("id")) == str(payout_id) and r.get("status") in PENDING_STATUSES
-        ),
+        (p for p in payouts if int(p["id"]) == int(payout_id)),
         None,
     )
     if not request_to_approve:
-        log(f"⚠️ [allow_payout] Запрос {payout_id} не найден")
-        audit_logger.warning(
-            f"Не найден запрос на одобрение {payout_id}"
-        )
+        logger.warning(f"Не найден запрос на одобрение {payout_id}")
         await query.edit_message_text("❌ Нет активного запроса для одобрения.")
+        return
+    if request_to_approve.get("status") not in PENDING_STATUSES:
+        log(
+            f"⚠️ [allow_payout] Запрос {payout_id} не в ожидающем статусе"
+        )
+        await query.edit_message_text("❌ Запрос уже обработан.")
         return
 
     user_id = request_to_approve["user_id"]

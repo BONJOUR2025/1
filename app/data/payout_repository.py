@@ -2,9 +2,12 @@ import json
 import os
 from datetime import datetime
 from typing import List, Optional, Dict, Any
+import logging
 
 from app.config import ADVANCE_REQUESTS_FILE
 from app.utils.logger import log
+
+logger = logging.getLogger(__name__)
 
 
 DEFAULT_ADVANCE_REQUESTS_FILE = "advance_requests.json"
@@ -52,6 +55,9 @@ class PayoutRepository:
         try:
             with open(self._file, "r", encoding="utf-8") as f:
                 data = json.load(f)
+            for payout in data:
+                payout["id"] = int(payout["id"])
+            logger.debug(f"[DEBUG] Загруженные ID: {[p['id'] for p in data]}")
         except Exception as e:
             log(f"❌ Failed reading {self._file}: {e}")
             data = []
