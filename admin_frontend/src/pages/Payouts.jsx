@@ -83,6 +83,8 @@ export default function Payouts() {
     status: 'Ожидает',
     sync_to_bot: false,
     notify_user: true,
+    note: '',
+    show_note_in_bot: false,
   };
 
   const [payouts, setPayouts] = useState([]);
@@ -188,7 +190,12 @@ export default function Payouts() {
   }
 
   function openEdit(p) {
-    setForm({ ...p, notify_user: true });
+    setForm({
+      ...p,
+      notify_user: true,
+      note: p.note || '',
+      show_note_in_bot: p.show_note_in_bot || false,
+    });
     setShowEditor(true);
   }
 
@@ -516,6 +523,22 @@ export default function Payouts() {
                 Уведомить сотрудника
               </label>
             )}
+            <textarea
+              className="border p-2 w-full"
+              placeholder="Примечание"
+              value={form.note}
+              onChange={(e) => setForm({ ...form, note: e.target.value })}
+            />
+            <label className="flex items-center gap-1 text-sm">
+              <input
+                type="checkbox"
+                checked={form.show_note_in_bot}
+                onChange={(e) =>
+                  setForm({ ...form, show_note_in_bot: e.target.checked })
+                }
+              />
+              Показывать примечание в боте
+            </label>
             <label className="flex items-center gap-1 text-sm">
               <input
                 type="checkbox"
