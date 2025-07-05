@@ -55,10 +55,7 @@ async def allow_payout(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     payouts = load_advance_requests()
     logger.debug(f"[allow_payout] Все ID в базе: {[p['id'] for p in payouts]}")
 
-    request_to_approve = next(
-        (p for p in payouts if int(p["id"]) == int(payout_id)),
-        None,
-    )
+codex/провести-техническую-диагностику-проекта
     if not request_to_approve:
         logger.warning(f"Не найден запрос на одобрение {payout_id}")
         await query.edit_message_text("❌ Нет активного запроса для одобрения.")
