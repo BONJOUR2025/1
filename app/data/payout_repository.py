@@ -52,6 +52,8 @@ class PayoutRepository:
         try:
             with open(self._file, "r", encoding="utf-8") as f:
                 data = json.load(f)
+            for payout in data:
+                payout["id"] = int(payout["id"])
         except Exception as e:
             log(f"❌ Failed reading {self._file}: {e}")
             data = []
