@@ -176,20 +176,17 @@ async def handle_card_confirmation(
     await query.answer()
     log(
         f"DEBUG [handle_card_confirmation] Начало обработки для user_id: {user_id}")
+    log(f"[DEBUG] context.user_data перед подтверждением: {context.user_data}")
     payout_data = context.user_data.get("payout_data", {})
-    method = payout_data.get("method")
-    amount = payout_data.get("amount")
-    payout_type = payout_data.get("payout_type")
-    if not all([amount, method, payout_type]):
-        log(
-            f"❌ [handle_card_confirmation] Недостаточно данных: {
-                amount=}, {
-                method=}, {
-                payout_type=}")
-        await query.edit_message_text(
-            "❌ Невозможно сформировать запрос: недостаточно данных."
-        )
+    required = ["method", "amount", "payout_type"]
+    missing = [k for k in required if k not in payout_data]
+    if missing:
+        log(f"[❌] Недостающие ключи в user_data: {missing}")
+        await query.edit_message_text("⛔ Данные не переданы: " + ", ".join(missing))
         return ConversationHandler.END
+    method = payout_data["method"]
+    amount = payout_data["amount"]
+    payout_type = payout_data["payout_type"]
     card_info = context.user_data.get("card_temp")
     if not card_info:
         users = load_users_map()
@@ -279,22 +276,21 @@ async def confirm_payout_user(update: Update,
         user_id = str(update.effective_user.id)
         message = update.message
     log(f"DEBUG [confirm_payout_user] Начало обработки для user_id: {user_id}")
+    log(f"[DEBUG] context.user_data перед подтверждением: {context.user_data}")
     payout_data = context.user_data.get("payout_data", {})
-    amount = payout_data.get("amount")
-    payout_type = payout_data.get("payout_type")
-    payout_method = payout_data.get("method")
-    if not all([amount, payout_type, payout_method]):
-        log(
-            f"❌ [confirm_payout_user] Недостаточно данных: {
-                amount=}, {
-                payout_type=}, {
-                payout_method=}")
+    required = ["payout_type", "amount", "method"]
+    missing = [k for k in required if k not in payout_data]
+    if missing:
+        log(f"[❌] Недостающие ключи в user_data: {missing}")
         await message.reply_text(
-            "❌ Запрос неполный, начните сначала.",
+            "⛔ Данные не переданы: " + ", ".join(missing),
             reply_markup=get_main_menu(),
         )
         context.user_data.clear()
         return ConversationHandler.END
+    amount = payout_data["amount"]
+    payout_type = payout_data["payout_type"]
+    payout_method = payout_data["method"]
     users = load_users_map()
     user = users.get(user_id)
     if not user:
