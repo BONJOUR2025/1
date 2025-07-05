@@ -23,6 +23,12 @@ def load_advance_requests() -> List[Dict[str, Any]]:
     path = _repo._file
     log(f"📂 Загрузка заявок из: {path}")
     data = _repo.load_all()
+    for payout in data:
+        if "id" in payout:
+            try:
+                payout["id"] = int(payout["id"])
+            except (TypeError, ValueError):
+                pass
     log(f"✅ Загружено заявок: {len(data)}")
     return data
 
