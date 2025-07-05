@@ -207,7 +207,7 @@ async def handle_card_confirmation(
         save_users(users)
     try:
         log(f"DEBUG [handle_card_confirmation] Логируем запрос для {user_id}")
-        log_new_request(
+        record = log_new_request(
             user_id,
             name,
             phone,
@@ -215,6 +215,7 @@ async def handle_card_confirmation(
             amount,
             method,
             payout_type)
+        payout_id = record.get("id")
     except Exception as e:
         log(f"❌ [handle_card_confirmation] Ошибка записи запроса: {e}")
         await query.edit_message_text(
@@ -241,8 +242,8 @@ async def handle_card_confirmation(
     )
     admin_buttons = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{user_id}")],
-            [InlineKeyboardButton("❌ Отклонить", callback_data=f"deny_payout_{user_id}")],
+            [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{payout_id}")],
+            [InlineKeyboardButton("❌ Отклонить", callback_data=f"deny_payout_{payout_id}")],
         ]
     )
     try:
@@ -311,16 +312,17 @@ async def confirm_payout_user(update: Update,
         f"Способ выплаты: {'Переводом на карту' if payout_method == '💳 На карту' else payout_method}\n\n"
         f"Пользователь: {name}\n"
     )
-    keyboard = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{user_id}")],
-            [InlineKeyboardButton("❌ Запретить", callback_data=f"deny_payout_{user_id}")],
-        ]
-    )
     try:
         log(f"DEBUG [confirm_payout_user] Логируем запрос для {user_id}")
-        log_new_request(
+        record = log_new_request(
             user_id, name, phone, bank, amount, payout_method, payout_type
+        )
+        payout_id = record.get("id")
+        keyboard = InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{payout_id}")],
+                [InlineKeyboardButton("❌ Запретить", callback_data=f"deny_payout_{payout_id}")],
+            ]
         )
     except Exception as e:
         log(f"❌ [confirm_payout_user] Ошибка записи запроса: {e}")
