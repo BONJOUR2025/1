@@ -1,10 +1,13 @@
 """Payout request helpers using the local repository."""
 from typing import Any, Dict, List
 from datetime import datetime
+import logging
 
 from app.data.payout_repository import PayoutRepository
 from app.schemas.payout import Payout
 from ..utils.logger import log
+
+logger = logging.getLogger(__name__)
 
 _repo = PayoutRepository()
 
@@ -23,12 +26,7 @@ def load_advance_requests() -> List[Dict[str, Any]]:
     path = _repo._file
     log(f"📂 Загрузка заявок из: {path}")
     data = _repo.load_all()
-    for payout in data:
-        if "id" in payout:
-            try:
-                payout["id"] = int(payout["id"])
-            except (TypeError, ValueError):
-                pass
+codex/провести-техническую-диагностику-проекта
     log(f"✅ Загружено заявок: {len(data)}")
     return data
 
