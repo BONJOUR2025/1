@@ -10,7 +10,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 13:19:56",
     "id": "1",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "462581912",
@@ -23,7 +25,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 13:30:58",
     "id": "3",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "462581912",
@@ -36,7 +40,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 13:31:20",
     "id": "4",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5111123471",
@@ -49,7 +55,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 13:46:50",
     "id": "5",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -62,7 +70,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 13:52:28",
     "id": "6",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -75,7 +85,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 13:53:24",
     "id": "7",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5247714073",
@@ -88,7 +100,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 14:36:45",
     "id": "8",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -101,7 +115,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 15:25:16",
     "id": "9",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1782368094",
@@ -114,7 +130,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 15:37:48",
     "id": "11",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1586122212",
@@ -127,7 +145,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-10 19:20:16",
     "id": "10",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -140,7 +160,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-12 11:38:50",
     "id": "12",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "432793033",
@@ -153,7 +175,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-12 11:47:46",
     "id": "13",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -166,7 +190,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-13 17:18:59",
     "id": "14",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -179,7 +205,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-16 11:30:24",
     "id": "15",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1674595510",
@@ -192,7 +220,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-18 17:36:12",
     "id": "16",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -205,7 +235,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-20 18:40:35",
     "id": "17",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -218,7 +250,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-21 10:33:12",
     "id": "18",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "948256529",
@@ -231,7 +265,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-23 17:50:10",
     "id": "19",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -244,7 +280,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-23 17:53:01",
     "id": "20",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5247714073",
@@ -257,7 +295,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-24 08:02:57",
     "id": "21",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -270,7 +310,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-24 09:41:06",
     "id": "22",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -283,7 +325,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-24 12:55:44",
     "id": "23",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5111123471",
@@ -296,7 +340,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-25 10:46:58",
     "id": "24",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1674595510",
@@ -309,7 +355,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-25 12:12:32",
     "id": "25",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "501393726",
@@ -322,7 +370,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-25 12:17:42",
     "id": "26",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "831200791",
@@ -335,7 +385,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-25 13:56:19",
     "id": "27",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1765220057",
@@ -348,7 +400,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-25 15:59:27",
     "id": "28",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "462581912",
@@ -361,7 +415,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-25 17:57:35",
     "id": "29",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1782368094",
@@ -374,7 +430,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-26 11:04:23",
     "id": "30",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1565339213",
@@ -387,7 +445,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-26 19:58:17",
     "id": "31",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -400,7 +460,9 @@
     "status": "Одобрено",
     "timestamp": "2025-04-28 17:04:10",
     "id": "32",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -413,7 +475,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-01 22:45:47",
     "id": "33",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -426,7 +490,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-02 10:42:38",
     "id": "34",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -439,7 +505,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-02 10:47:37",
     "id": "35",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1674595510",
@@ -452,7 +520,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-04 16:34:23",
     "id": "36",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -465,7 +535,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-06 13:35:10",
     "id": "37",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -478,7 +550,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-06 17:35:11",
     "id": "38",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "501393726",
@@ -491,7 +565,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-08 12:00:30",
     "id": "39",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1674595510",
@@ -504,7 +580,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-08 15:14:04",
     "id": "40",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -517,7 +595,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-09 13:24:59",
     "id": "41",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "831200791",
@@ -530,7 +610,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-09 17:46:31",
     "id": "42",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5247714073",
@@ -543,7 +625,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-09 17:55:42",
     "id": "43",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1765220057",
@@ -556,7 +640,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-09 18:57:45",
     "id": "44",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5111123471",
@@ -569,7 +655,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-09 20:55:39",
     "id": "45",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5111123471",
@@ -582,7 +670,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-09 20:57:17",
     "id": "46",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "948256529",
@@ -595,7 +685,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-09 22:16:31",
     "id": "47",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1565339213",
@@ -608,7 +700,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-10 10:16:38",
     "id": "48",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -621,7 +715,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-10 11:53:17",
     "id": "49",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1782368094",
@@ -634,7 +730,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-10 16:57:44",
     "id": "50",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "432793033",
@@ -647,7 +745,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-10 18:59:31",
     "id": "51",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -660,7 +760,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-14 19:24:27",
     "id": "52",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -673,7 +775,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-15 11:20:25",
     "id": "53",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1782368094",
@@ -686,7 +790,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-15 12:50:32",
     "id": "54",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "462581912",
@@ -699,7 +805,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-15 17:48:47",
     "id": "55",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -712,7 +820,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-16 21:21:58",
     "id": "56",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -725,7 +835,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-18 18:05:10",
     "id": "57",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -738,7 +850,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-19 23:47:30",
     "id": "58",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "501393726",
@@ -751,7 +865,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-20 11:22:25",
     "id": "59",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1037475044",
@@ -764,7 +880,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-20 18:31:27",
     "id": "60",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1782368094",
@@ -777,7 +895,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-22 15:25:05",
     "id": "61",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -790,7 +910,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-23 09:42:24",
     "id": "62",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "948256529",
@@ -803,7 +925,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-23 12:09:30",
     "id": "63",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5247714073",
@@ -816,7 +940,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-23 13:57:09",
     "id": "64",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1565339213",
@@ -829,7 +955,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-24 11:57:50",
     "id": "65",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1674595510",
@@ -842,7 +970,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-24 13:23:11",
     "id": "66",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -855,7 +985,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-25 09:35:49",
     "id": "67",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -868,7 +1000,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-25 10:59:30",
     "id": "68",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1765220057",
@@ -881,7 +1015,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-25 16:17:26",
     "id": "69",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -894,7 +1030,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-26 15:08:57",
     "id": "70",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -907,7 +1045,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-27 17:45:14",
     "id": "71",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -920,7 +1060,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-28 14:14:11",
     "id": "72",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -933,7 +1075,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-29 20:33:36",
     "id": "73",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5111123471",
@@ -946,7 +1090,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-30 10:59:58",
     "id": "74",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -959,7 +1105,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-30 11:37:26",
     "id": "75",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5247714073",
@@ -972,7 +1120,9 @@
     "status": "Одобрено",
     "timestamp": "2025-05-30 11:49:30",
     "id": "76",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -985,7 +1135,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-01 08:20:02",
     "id": "77",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1674595510",
@@ -998,7 +1150,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-01 13:06:00",
     "id": "78",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -1011,7 +1165,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-02 11:54:08",
     "id": "79",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -1024,7 +1180,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-02 18:50:34",
     "id": "80",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1782368094",
@@ -1037,7 +1195,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-03 15:15:01",
     "id": "81",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -1050,7 +1210,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-03 15:16:17",
     "id": "82",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1674595510",
@@ -1063,7 +1225,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-04 12:07:27",
     "id": "83",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "2045618984",
@@ -1076,7 +1240,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-04 16:21:19",
     "id": "84",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -1089,7 +1255,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-05 14:34:07",
     "id": "85",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1565339213",
@@ -1102,7 +1270,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-05 20:35:37",
     "id": "86",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -1115,7 +1285,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-06 11:33:54",
     "id": "87",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "2045618984",
@@ -1128,7 +1300,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-06 20:04:46",
     "id": "88",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "2045618984",
@@ -1141,7 +1315,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-06 20:05:41",
     "id": "89",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -1154,7 +1330,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-07 10:21:12",
     "id": "90",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "948256529",
@@ -1167,7 +1345,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-10 07:10:48",
     "id": "91",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1765220057",
@@ -1180,7 +1360,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-10 09:53:14",
     "id": "92",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "831200791",
@@ -1193,7 +1375,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-10 11:17:44",
     "id": "93",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "831200791",
@@ -1206,7 +1390,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-10 11:26:29",
     "id": "94",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "501393726",
@@ -1219,7 +1405,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-10 11:58:25",
     "id": "95",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -1232,7 +1420,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-10 12:00:39",
     "id": "96",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -1245,7 +1435,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-10 14:12:53",
     "id": "97",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "5111123471",
@@ -1258,7 +1450,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-10 18:40:14",
     "id": "98",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "432793033",
@@ -1271,7 +1465,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-11 08:06:08",
     "id": "99",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "000",
@@ -1284,7 +1480,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-11 12:34:12",
     "id": "100",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1782368094",
@@ -1297,7 +1495,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-11 16:55:54",
     "id": "101",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -1310,7 +1510,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-12 10:04:39",
     "id": "102",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "2045618984",
@@ -1323,7 +1525,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-12 18:47:24",
     "id": "103",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -1336,7 +1540,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-16 17:35:02",
     "id": "104",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -1349,7 +1555,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-16 20:50:05",
     "id": "105",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -1362,7 +1570,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-17 14:26:01",
     "id": "107",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "2045618984",
@@ -1375,7 +1585,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-17 19:11:25",
     "id": "115",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -1388,7 +1600,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-18 12:13:52",
     "id": "111",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "501393726",
@@ -1401,7 +1615,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-19 13:07:47",
     "id": "113",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -1414,7 +1630,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-19 14:57:01",
     "id": "114",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1037475044",
@@ -1427,7 +1645,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-19 20:42:55",
     "id": "116",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "2045618984",
@@ -1440,7 +1660,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-19 20:43:48",
     "id": "117",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1674595510",
@@ -1453,7 +1675,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-20 11:38:55",
     "id": "118",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -1466,7 +1690,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-20 14:29:46",
     "id": "121",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "20456189804",
@@ -1479,7 +1705,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-21 20:04:14",
     "id": "124",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1565339213",
@@ -1492,7 +1720,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-22 11:35:01",
     "id": "125",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1782368094",
@@ -1505,7 +1735,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-23 15:50:46",
     "id": "126",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -1518,7 +1750,9 @@
     "status": "Одобрено",
     "timestamp": "2025-06-23 16:25:29",
     "id": "127",
-    "full_name": ""
+    "full_name": "",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -1531,7 +1765,9 @@
     "status": "Отклонено",
     "id": "129",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -1544,7 +1780,9 @@
     "status": "Одобрено",
     "id": "130",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "948256529",
@@ -1557,7 +1795,9 @@
     "status": "Одобрено",
     "id": "131",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1782368094",
@@ -1570,7 +1810,9 @@
     "status": "Одобрено",
     "id": "132",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -1583,7 +1825,9 @@
     "status": "Одобрено",
     "id": "133",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1586122212",
@@ -1596,7 +1840,9 @@
     "status": "Отклонено",
     "id": "134",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1586122212",
@@ -1609,7 +1855,9 @@
     "status": "Одобрено",
     "id": "135",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "1765220057",
@@ -1622,7 +1870,9 @@
     "status": "Одобрено",
     "id": "136",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "831200791",
@@ -1635,7 +1885,9 @@
     "status": "Одобрено",
     "id": "137",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "462581912",
@@ -1648,7 +1900,9 @@
     "status": "Одобрено",
     "id": "138",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "2045618984",
@@ -1661,7 +1915,9 @@
     "status": "Одобрено",
     "id": "142",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "805091546",
@@ -1674,7 +1930,9 @@
     "status": "Одобрено",
     "id": "143",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "2045618984",
@@ -1687,7 +1945,9 @@
     "status": "Одобрено",
     "id": "144",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "6270418859",
@@ -1700,7 +1960,9 @@
     "status": "Одобрено",
     "id": "145",
     "full_name": "",
-    "timestamp": "2025-06-27 11:24:51"
+    "timestamp": "2025-06-27 11:24:51",
+    "note": "",
+    "show_note_in_bot": false
   },
   {
     "user_id": "7385498306",
@@ -1712,6 +1974,8 @@
     "payout_type": "Аванс",
     "status": "Одобрено",
     "timestamp": "2025-06-27 17:43:10",
-    "id": "146"
+    "id": "146",
+    "note": "",
+    "show_note_in_bot": false
   }
 ]

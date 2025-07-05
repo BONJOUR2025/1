@@ -56,6 +56,8 @@ class PayoutService:
             "payout_type": data.payout_type,
             "status": "Ожидает",
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "note": data.note or "",
+            "show_note_in_bot": data.show_note_in_bot,
         }
         created = self._repo.create(payout_dict)
         logger.info(
