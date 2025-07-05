@@ -56,6 +56,8 @@ class PayoutService:
             "payout_type": data.payout_type,
             "status": "Ожидает",
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "note": data.note or "",
+            "show_note_in_bot": data.show_note_in_bot,
         }
         created = self._repo.create(payout_dict)
         logger.info(
@@ -72,27 +74,49 @@ class PayoutService:
         return Payout(**created)
 
     async def update_payout(
-            self,
-            payout_id: str,
-            update: PayoutUpdate) -> Optional[Payout]:
-        if update.status is not None:
-            return await self.update_status(payout_id, update.status)
-        updated = self._repo.update(
-            payout_id, update.model_dump(
-                exclude_none=True))
-        if updated:
+        self,
+        payout_id: str,
+        update: PayoutUpdate,
+    ) -> Optional[Payout]:
+        updates = update.model_dump(exclude_none=True)
+        notify = updates.pop("notify_user", True)
+        if not updates:
+            return None
+        updated = self._repo.update(payout_id, updates)
+        if not updated:
+            return None
+        if "status" in updates:
+            # notify user if status has changed
+            if self._telegram and notify:
+                try:
+                    message = {
+                        "Одобрено": "✅ Ваша заявка одобрена",
+                        "Отказано": "❌ Ваша заявка отклонена",
+                        "Выплачен": "📤 Выплата отправлена",
+                        "Выплачено": "📤 Выплата отправлена",
+                    }.get(updates["status"])
+                    if message:
+                        await self._telegram.send_message_to_user(
+                            updated["user_id"],
+                            f"{message}\nСумма: {updated['amount']} ₽",
+                        )
+                except Exception as exc:
+                    logger.warning(f"Не удалось уведомить пользователя: {exc}")
             logger.info(
-                f"✏️ Выплата {payout_id} обновлена")
-            return Payout(**updated)
-        return None
+                f"✏️ Выплата {payout_id} обновлена — статус: {updates['status']}")
+        else:
+            logger.info(f"✏️ Выплата {payout_id} обновлена")
+        return Payout(**updated)
 
-    async def update_status(self, payout_id: str, status: str) -> Optional[Payout]:
+    async def update_status(
+        self, payout_id: str, status: str, notify: bool = True
+    ) -> Optional[Payout]:
         updated = self._repo.update(payout_id, {"status": status})
         if not updated:
             return None
         logger.info(
             f"✏️ Выплата {payout_id} обновлена — статус: {status}")
-        if self._telegram:
+        if self._telegram and notify:
             try:
                 message = {
                     "Одобрено": "✅ Ваша заявка одобрена",

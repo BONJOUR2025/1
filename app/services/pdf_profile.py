@@ -1,5 +1,7 @@
-"""PDF profile generation service without external dependencies."""
+"""PDF profile generation service using ``fpdf``."""
 from typing import TYPE_CHECKING
+from fpdf import FPDF
+import os
 
 if TYPE_CHECKING:  # pragma: no cover - for type hints only
     from app.data.employee_repository import EmployeeRepository
@@ -13,7 +15,7 @@ def generate_employee_pdf(
     payout_repo: "PayoutRepository",
     vacation_repo: "VacationRepository",
 ) -> bytes:
-    """Return a very simple PDF-like document with employee info."""
+    """Generate a small PDF file with basic employee information."""
     employees = employee_repo.list_employees()
     employee = next((e for e in employees if str(e.id) == str(user_id)), None)
     if not employee:
@@ -22,28 +24,42 @@ def generate_employee_pdf(
     payouts = payout_repo.list(employee_id=str(user_id))
     vacations = [v for v in vacation_repo.list() if str(v.get("employee_id")) == str(user_id)]
 
-    lines = [
-        "👤 PERSONAL DETAILS",
-        f"Full name: {getattr(employee, 'full_name', '')}",
-        f"Telegram ID: {employee.id}",
-        f"Code: {getattr(employee, 'name', '')}",
-        "",
-        "💸 PAYOUT HISTORY",
-    ]
+    pdf = FPDF()
+    pdf.add_page()
+
+    font_path = "fonts/DejaVuSans.ttf"
+
+    def safe(text: str) -> str:
+        if os.path.exists(font_path):
+            return str(text)
+        return str(text).encode("ascii", "ignore").decode("ascii")
+
+    if os.path.exists(font_path):
+        pdf.add_font("DejaVu", style="", fname=font_path, uni=True)
+        pdf.set_font("DejaVu", size=12)
+    else:
+        pdf.set_font("Helvetica", size=12)
+
+    pdf.cell(0, 10, safe("PERSONAL DETAILS"), ln=True)
+    pdf.cell(0, 10, safe(f"Full name: {getattr(employee, 'full_name', '')}"), ln=True)
+    pdf.cell(0, 10, safe(f"Telegram ID: {employee.id}"), ln=True)
+    pdf.cell(0, 10, safe(f"Code: {getattr(employee, 'name', '')}"), ln=True)
+    pdf.ln(5)
+    pdf.cell(0, 10, safe("PAYOUT HISTORY"), ln=True)
     for p in payouts:
-        lines.append(f"{p.get('timestamp', '')} | {p.get('amount')} ₽ | {p.get('status', '')}")
-    lines.append("")
-    lines.append("📅 VACATION")
+        line = safe(f"{p.get('timestamp', '')} | {p.get('amount')} RUB | {p.get('status', '')}")
+        pdf.cell(0, 10, line, ln=True)
+    pdf.ln(5)
+    pdf.cell(0, 10, safe("VACATION"), ln=True)
     for v in vacations:
-        lines.append(f"{v.get('start_date')} → {v.get('end_date')}")
-    lines.append("")
-    lines.append("📊 STATS")
+        pdf.cell(0, 10, safe(f"{v.get('start_date')} -> {v.get('end_date')}"), ln=True)
+    pdf.ln(5)
+    pdf.cell(0, 10, safe("STATS"), ln=True)
     status_counts = {}
     for p in payouts:
         status = p.get("status", "")
         status_counts[status] = status_counts.get(status, 0) + 1
     for status, count in status_counts.items():
-        lines.append(f"{status}: {count}")
-    document = "\n".join(lines)
-    # return as bytes so PdfReader stub can decode
-    return document.encode("utf-8")
+        pdf.cell(0, 10, safe(f"{status}: {count}"), ln=True)
+
+    return pdf.output(dest="S").encode("latin-1")

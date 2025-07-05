@@ -1,3 +1,4 @@
+import logging
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -15,16 +16,21 @@ from ...services.advance_requests import (
 from ...keyboards.reply_user import get_main_menu
 from ...utils.logger import log
 
+logger = logging.getLogger(__name__)
+
 from ...constants import PayoutStates
 
 
 async def request_payout_user(update: Update,
                               context: ContextTypes.DEFAULT_TYPE) -> int:
+    logger.info(
+        f"▶ Запущен FSM-запрос выплаты от {update.effective_user.id}"
+    )
     user_id = str(update.effective_user.id)
     chat_id = update.effective_chat.id
     state = context.application.chat_data.get(chat_id, {}).get("conversation")
     log(f"[FSM] state before entry: {state}")
-    log(f"DEBUG [request_payout_user] Запрос выплаты от user_id: {user_id}")
+    log(f"▶ Запрос выплаты от {user_id}")
     users = load_users_map()
     if user_id not in users:
         if update.message:
@@ -69,6 +75,13 @@ async def request_payout_user(update: Update,
         "DEBUG [request_payout_user] Клавиатура отправлена, переход в состояние PayoutStates.SELECT_TYPE"
     )
     return PayoutStates.SELECT_TYPE
+
+
+async def request_payout_start(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
+    """Alias for backward compatibility."""
+    return await request_payout_user(update, context)
 
 
 async def handle_payout_type_user(
@@ -163,20 +176,17 @@ async def handle_card_confirmation(
     await query.answer()
     log(
         f"DEBUG [handle_card_confirmation] Начало обработки для user_id: {user_id}")
+    log(f"[DEBUG] context.user_data перед подтверждением: {context.user_data}")
     payout_data = context.user_data.get("payout_data", {})
-    method = payout_data.get("method")
-    amount = payout_data.get("amount")
-    payout_type = payout_data.get("payout_type")
-    if not all([amount, method, payout_type]):
-        log(
-            f"❌ [handle_card_confirmation] Недостаточно данных: {
-                amount=}, {
-                method=}, {
-                payout_type=}")
-        await query.edit_message_text(
-            "❌ Невозможно сформировать запрос: недостаточно данных."
-        )
+    required = ["method", "amount", "payout_type"]
+    missing = [k for k in required if k not in payout_data]
+    if missing:
+        log(f"[❌] Недостающие ключи в user_data: {missing}")
+        await query.edit_message_text("⛔ Данные не переданы: " + ", ".join(missing))
         return ConversationHandler.END
+    method = payout_data["method"]
+    amount = payout_data["amount"]
+    payout_type = payout_data["payout_type"]
     card_info = context.user_data.get("card_temp")
     if not card_info:
         users = load_users_map()
@@ -197,7 +207,7 @@ async def handle_card_confirmation(
         save_users(users)
     try:
         log(f"DEBUG [handle_card_confirmation] Логируем запрос для {user_id}")
-        log_new_request(
+        record = log_new_request(
             user_id,
             name,
             phone,
@@ -205,6 +215,7 @@ async def handle_card_confirmation(
             amount,
             method,
             payout_type)
+        payout_id = record.get("id")
     except Exception as e:
         log(f"❌ [handle_card_confirmation] Ошибка записи запроса: {e}")
         await query.edit_message_text(
@@ -231,8 +242,8 @@ async def handle_card_confirmation(
     )
     admin_buttons = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{user_id}")],
-            [InlineKeyboardButton("❌ Отклонить", callback_data=f"deny_payout_{user_id}")],
+            [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{payout_id}")],
+            [InlineKeyboardButton("❌ Отклонить", callback_data=f"deny_payout_{payout_id}")],
         ]
     )
     try:
@@ -266,22 +277,21 @@ async def confirm_payout_user(update: Update,
         user_id = str(update.effective_user.id)
         message = update.message
     log(f"DEBUG [confirm_payout_user] Начало обработки для user_id: {user_id}")
+    log(f"[DEBUG] context.user_data перед подтверждением: {context.user_data}")
     payout_data = context.user_data.get("payout_data", {})
-    amount = payout_data.get("amount")
-    payout_type = payout_data.get("payout_type")
-    payout_method = payout_data.get("method")
-    if not all([amount, payout_type, payout_method]):
-        log(
-            f"❌ [confirm_payout_user] Недостаточно данных: {
-                amount=}, {
-                payout_type=}, {
-                payout_method=}")
+    required = ["payout_type", "amount", "method"]
+    missing = [k for k in required if k not in payout_data]
+    if missing:
+        log(f"[❌] Недостающие ключи в user_data: {missing}")
         await message.reply_text(
-            "❌ Запрос неполный, начните сначала.",
+            "⛔ Данные не переданы: " + ", ".join(missing),
             reply_markup=get_main_menu(),
         )
         context.user_data.clear()
         return ConversationHandler.END
+    amount = payout_data["amount"]
+    payout_type = payout_data["payout_type"]
+    payout_method = payout_data["method"]
     users = load_users_map()
     user = users.get(user_id)
     if not user:
@@ -302,16 +312,17 @@ async def confirm_payout_user(update: Update,
         f"Способ выплаты: {'Переводом на карту' if payout_method == '💳 На карту' else payout_method}\n\n"
         f"Пользователь: {name}\n"
     )
-    keyboard = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{user_id}")],
-            [InlineKeyboardButton("❌ Запретить", callback_data=f"deny_payout_{user_id}")],
-        ]
-    )
     try:
         log(f"DEBUG [confirm_payout_user] Логируем запрос для {user_id}")
-        log_new_request(
+        record = log_new_request(
             user_id, name, phone, bank, amount, payout_method, payout_type
+        )
+        payout_id = record.get("id")
+        keyboard = InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{payout_id}")],
+                [InlineKeyboardButton("❌ Запретить", callback_data=f"deny_payout_{payout_id}")],
+            ]
         )
     except Exception as e:
         log(f"❌ [confirm_payout_user] Ошибка записи запроса: {e}")

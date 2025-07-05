@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pandas
+openpyxl
+pillow
+fpdf
+PyPDF2
+python-telegram-bot
+pydantic-settings

@@ -27,12 +27,12 @@ def unmerge_cells(sheet):
 def get_cell_comment(sheet_name, row_index, column_letter):
     """Получает примечание из указанной ячейки Excel."""
     if not os.path.exists(EXCEL_FILE):
-        print(f"❌ Error: File {EXCEL_FILE} not found!")
+        log(f"❌ Error: File {EXCEL_FILE} not found!")
         return "File error"
     try:
         workbook = load_workbook(EXCEL_FILE, data_only=False)
         if sheet_name not in workbook.sheetnames:
-            print(f"❌ Error: Sheet {sheet_name} not found!")
+            log(f"❌ Error: Sheet {sheet_name} not found!")
             return "Sheet error"
         sheet = workbook[sheet_name]
         cell_ref = f"{column_letter}{row_index + 3}"
@@ -42,7 +42,7 @@ def get_cell_comment(sheet_name, row_index, column_letter):
         else:
             return "No comment"
     except Exception as e:
-        print(
+        log(
             f"❌ Error loading comment from {column_letter}{row_index + 1}: {e}"
         )
         return "Error"
@@ -90,7 +90,7 @@ def update_cell(sheet_name, cell, value):
         workbook.save(EXCEL_FILE)
         return True
     except Exception as e:
-        print(f"Error updating cell: {e}")
+        log(f"Error updating cell: {e}")
         return False
 
 
@@ -124,7 +124,7 @@ def export_to_pdf(sheet_name="ЯНВАРЬ"):
         pdf.output(filename)
         return filename
     except Exception as e:
-        print(f"Error exporting to PDF: {e}")
+        log(f"Error exporting to PDF: {e}")
         return None
 
 
@@ -145,11 +145,11 @@ def export_advances_to_pdf(
         with open(ADVANCE_REQUESTS_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
     except Exception as e:
-        print(f"❌ Ошибка чтения файла: {e}")
+        log(f"❌ Ошибка чтения файла: {e}")
         return None
 
     if not data:
-        print("⚠️ Нет данных для экспорта.")
+        log("⚠️ Нет данных для экспорта.")
         return None
 
     # Фильтрация по параметрам
@@ -196,7 +196,7 @@ def export_advances_to_pdf(
             pdf.add_font("DejaVu", "B", bold_font, uni=True)
         pdf.set_font("DejaVu", "", 10)
     else:
-        print(
+        log(
             f"⚠️ Шрифт не найден: {font_path}. Используется стандартный Arial"
         )
         pdf.set_font("Arial", size=10)
@@ -222,13 +222,13 @@ def export_advances_to_pdf(
             for chunk in textwrap.wrap(line, width=110):
                 pdf.cell(0, 8, txt=chunk, ln=True)
         except Exception as e:
-            print(f"❌ Ошибка в строке {idx}: {e}")
+            log(f"❌ Ошибка в строке {idx}: {e}")
             continue
 
     try:
         pdf.output(filename)
-        print(f"✅ PDF отчёт сохранён: {filename}")
+        log(f"✅ PDF отчёт сохранён: {filename}")
         return filename
     except Exception as e:
-        print(f"❌ Ошибка сохранения PDF: {e}")
+        log(f"❌ Ошибка сохранения PDF: {e}")
         return None

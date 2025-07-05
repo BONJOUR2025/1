@@ -15,7 +15,7 @@ from .conversations import (
 )
 from ..handlers.user import (
     handle_salary_request,
-    get_user_info_user,
+    start,
     home_handler_user,
     handle_selected_month_user,
     view_salary_user,
@@ -60,20 +60,18 @@ import datetime
 
 def create_application():
     app = ApplicationBuilder().token(TOKEN).build()
-    register_handlers(app)
+    register_all_handlers(app)
     register_jobs(app)
 
     return app
 
 
-def register_handlers(app):
+def _register_all_handlers(app):
     payout_conv_handler = build_payout_conversation()
     admin_conv_handler = build_admin_conversation()
     manual_payout_handler = build_manual_payout_conversation()
     reset_filter = filters.Regex(r"^(🏠 Домой|🔙 Назад|❌ Отмена)$")
-    app.add_handler(
-        CommandHandler("start", get_user_info_user, filters=~filters.User(ADMIN_ID))
-    )
+    app.add_handler(CommandHandler("start", start))
     app.add_handler(
         CommandHandler("salary", handle_salary_request, filters=~filters.User(ADMIN_ID))
     )
@@ -179,6 +177,25 @@ def register_handlers(app):
         )
     )
     app.add_error_handler(error_handler)
+
+
+def register_admin_handlers(app):
+    """Register admin-specific handlers."""
+    _register_all_handlers(app)
+
+
+def register_user_handlers(app):
+    """Register user handlers (currently included in admin registration)."""
+
+
+def register_fallbacks(app):
+    """Register fallback handlers (currently included in admin registration)."""
+
+
+def register_all_handlers(app):
+    register_admin_handlers(app)
+    register_user_handlers(app)
+    register_fallbacks(app)
 
 
 async def error_handler(update, context):

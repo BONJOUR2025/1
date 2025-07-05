@@ -82,6 +82,9 @@ export default function Payouts() {
     method: '💳 На карту',
     status: 'Ожидает',
     sync_to_bot: false,
+    notify_user: true,
+    note: '',
+    show_note_in_bot: false,
   };
 
   const [payouts, setPayouts] = useState([]);
@@ -187,7 +190,12 @@ export default function Payouts() {
   }
 
   function openEdit(p) {
-    setForm({ ...p });
+    setForm({
+      ...p,
+      notify_user: true,
+      note: p.note || '',
+      show_note_in_bot: p.show_note_in_bot || false,
+    });
     setShowEditor(true);
   }
 
@@ -491,6 +499,46 @@ export default function Payouts() {
               <option value="🏦 Из кассы">Из кассы</option>
               <option value="🤝 Наличными">Наличными</option>
             </select>
+            {form.id && (
+              <select
+                className="border p-2 w-full"
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value })}
+              >
+                <option value="Ожидает">Ожидает</option>
+                <option value="Одобрено">Одобрено</option>
+                <option value="Отказано">Отказано</option>
+                <option value="Выплачен">Выплачен</option>
+              </select>
+            )}
+            {form.id && (
+              <label className="flex items-center gap-1 text-sm">
+                <input
+                  type="checkbox"
+                  checked={form.notify_user}
+                  onChange={(e) =>
+                    setForm({ ...form, notify_user: e.target.checked })
+                  }
+                />
+                Уведомить сотрудника
+              </label>
+            )}
+            <textarea
+              className="border p-2 w-full"
+              placeholder="Примечание"
+              value={form.note}
+              onChange={(e) => setForm({ ...form, note: e.target.value })}
+            />
+            <label className="flex items-center gap-1 text-sm">
+              <input
+                type="checkbox"
+                checked={form.show_note_in_bot}
+                onChange={(e) =>
+                  setForm({ ...form, show_note_in_bot: e.target.checked })
+                }
+              />
+              Показывать примечание в боте
+            </label>
             <label className="flex items-center gap-1 text-sm">
               <input
                 type="checkbox"

@@ -181,10 +181,12 @@ class TelegramService:
             f"💳 Метод: {payout['method']}\n"
             f"📂 Тип: {payout['payout_type']}"
         )
+        if payout.get("note") and payout.get("show_note_in_bot"):
+            text += f"\n\n📝 {payout['note']}"
         markup = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{payout['user_id']}")],
-                [InlineKeyboardButton("❌ Отклонить", callback_data=f"deny_payout_{payout['user_id']}")],
+                [InlineKeyboardButton("✅ Разрешить", callback_data=f"allow_payout_{payout['id']}")],
+                [InlineKeyboardButton("❌ Отклонить", callback_data=f"deny_payout_{payout['id']}")],
             ]
         )
         if not ADMIN_CHAT_ID:

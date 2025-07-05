@@ -11,6 +11,7 @@ from ..constants import (
     PayoutStates,
     AdvanceReportStates,
     ManualPayoutStates,
+    PAYMENT_REQUEST_PATTERN,
 )
 from ..config import ADMIN_ID
 from ..handlers.user import (
@@ -75,7 +76,8 @@ def build_payout_conversation():
     return ConversationHandler(
         entry_points=[
             MessageHandler(
-                filters.Regex(r"^💰 Запросить выплату$") & ~filters.User(ADMIN_ID),
+                filters.Regex(PAYMENT_REQUEST_PATTERN)
+                & ~filters.User(ADMIN_ID),
                 request_payout_user,
             ),
             MessageHandler(

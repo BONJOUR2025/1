@@ -1,12 +1,18 @@
 """Payout request helpers using the local repository."""
 from typing import Any, Dict, List
 from datetime import datetime
+import logging
 
 from app.data.payout_repository import PayoutRepository
 from app.schemas.payout import Payout
 from ..utils.logger import log
 
+logger = logging.getLogger(__name__)
+
 _repo = PayoutRepository()
+
+# statuses considered pending (awaiting admin decision)
+PENDING_STATUSES = {"Ожидает", "В ожидании"}
 
 STATUS_TRANSLATIONS = {
     "approved": "Одобрено",
@@ -20,6 +26,7 @@ def load_advance_requests() -> List[Dict[str, Any]]:
     path = _repo._file
     log(f"📂 Загрузка заявок из: {path}")
     data = _repo.load_all()
+codex/провести-техническую-диагностику-проекта
     log(f"✅ Загружено заявок: {len(data)}")
     return data
 
@@ -45,7 +52,7 @@ def log_new_request(
     amount: Any,
     payout_method: str,
     payout_type: str | None = None,
-) -> None:
+) -> Dict[str, Any]:
     payload = {
         "user_id": str(user_id),
         "name": name,
@@ -54,39 +61,41 @@ def log_new_request(
         "amount": int(amount),
         "method": payout_method,
         "payout_type": payout_type,
-        "status": "В ожидании",
+        "status": "Ожидает",
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
-    _repo.create(payload)
-    log(f"📝 Новый запрос выплаты: {payload}")
+    record = _repo.create(payload)
+    log(f"📝 Новый запрос выплаты: {record}")
+    return record
 
 
 def check_pending_request(user_id: Any) -> bool:
-    requests = _repo.list(employee_id=user_id, status="В ожидании")
-    return len(requests) > 0
+    requests = _repo.list(employee_id=user_id)
+    return any(r.get("status") in PENDING_STATUSES for r in requests)
 
 
-def update_request_status(user_id: Any, status: str) -> bool:
-    items = _repo.list(employee_id=user_id, status="В ожидании")
-    if not items:
+def update_request_status(payout_id: Any, status: str) -> bool:
+    record = next(
+        (r for r in _repo.load_all() if str(r.get("id")) == str(payout_id)),
+        None,
+    )
+    if not record:
+        log(f"⚠️ [update_request_status] Запрос {payout_id} не найден")
+        return False
+    if record.get("status") not in PENDING_STATUSES:
         log(
-            f"⚠️ [update_request_status] Не найдено активных запросов для user_id {user_id}"
+            f"⚠️ [update_request_status] Запрос {payout_id} не в ожидающем статусе"
         )
         return False
-    payout_id = items[0]["id"]
     status_ru = STATUS_TRANSLATIONS.get(status.lower(), status)
     updates = {"status": status_ru}
-    if not items[0].get("timestamp"):
+    if not record.get("timestamp"):
         updates["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    updated = _repo.update(payout_id, updates)
+    updated = _repo.update(str(payout_id), updates)
     if updated:
-        log(
-            f"✅ Статус запроса для user_id {user_id} обновлён на '{status_ru}'"
-        )
+        log(f"✅ Статус запроса {payout_id} обновлён на '{status_ru}'")
         return True
-    log(
-        f"⚠️ [update_request_status] Не удалось обновить запрос {payout_id} для user_id {user_id}"
-    )
+    log(f"⚠️ [update_request_status] Не удалось обновить запрос {payout_id}")
     return False
 
 

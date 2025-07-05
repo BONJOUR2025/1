@@ -31,6 +31,8 @@ from ...services.advance_requests import (
 from ...utils.logger import log
 from ...utils import is_valid_user_id
 
+logger = logging.getLogger(__name__)
+
 
 audit_logger = logging.getLogger("payout_actions")
 if not audit_logger.handlers:
@@ -47,32 +49,31 @@ PENDING_STATUSES = {"Ожидает", "В ожидании"}
 async def allow_payout(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     await query.answer()
-    user_id = query.data.split("_")[-1]
-    log(f"✅ [allow_payout] Одобрение выплаты для user_id: {user_id}")
+    payout_id = int(query.data.split("_")[-1])
+    log(f"✅ [allow_payout] Одобрение выплаты для payout_id: {payout_id}")
 
-    payout_requests = load_advance_requests()
-    request_to_approve = next(
-        (
-            r
-            for r in payout_requests
-            if r["user_id"] == user_id and r.get("status") in PENDING_STATUSES
-        ),
-        None,
-    )
+    payouts = load_advance_requests()
+    logger.debug(f"[allow_payout] Все ID в базе: {[p['id'] for p in payouts]}")
+
+codex/провести-техническую-диагностику-проекта
     if not request_to_approve:
-        log(f"⚠️ [allow_payout] Запрос для user_id {user_id} не найден")
-        audit_logger.warning(
-            f"Не найден запрос на одобрение для user_id {user_id}"
-        )
+        logger.warning(f"Не найден запрос на одобрение {payout_id}")
         await query.edit_message_text("❌ Нет активного запроса для одобрения.")
         return
+    if request_to_approve.get("status") not in PENDING_STATUSES:
+        log(
+            f"⚠️ [allow_payout] Запрос {payout_id} не в ожидающем статусе"
+        )
+        await query.edit_message_text("❌ Запрос уже обработан.")
+        return
 
+    user_id = request_to_approve["user_id"]
     log(
         f"📋 [allow_payout] Найден запрос {request_to_approve['id']} для user_id {user_id}"
     )
 
     try:
-        updated = update_request_status(user_id, "approved")
+        updated = update_request_status(payout_id, "approved")
     except Exception as e:
         log(f"❌ Ошибка обновления статуса выплаты: {e}")
         updated = False
@@ -154,32 +155,34 @@ async def allow_payout(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 async def deny_payout(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     await query.answer()
-    user_id = query.data.split("_")[-1]
-    log(f"❌ [deny_payout] Отклонение выплаты для user_id: {user_id}")
+    payout_id = query.data.split("_")[-1]
+    log(f"❌ [deny_payout] Отклонение выплаты для payout_id: {payout_id}")
 
     payout_requests = load_advance_requests()
     request_to_deny = next(
         (
             r
             for r in payout_requests
-            if r["user_id"] == user_id and r.get("status") in PENDING_STATUSES
+            if str(r.get("id")) == str(payout_id) and r.get("status") in PENDING_STATUSES
         ),
         None,
     )
     if not request_to_deny:
-        log(f"⚠️ [deny_payout] Запрос для user_id {user_id} не найден")
+        log(f"⚠️ [deny_payout] Запрос {payout_id} не найден")
         audit_logger.warning(
-            f"Не найден запрос на отклонение для user_id {user_id}"
+            f"Не найден запрос на отклонение {payout_id}"
         )
         await query.edit_message_text("❌ Нет активного запроса для отклонения.")
         return
 
     log(
-        f"📋 [deny_payout] Найден запрос {request_to_deny['id']} для user_id {user_id}"
+        f"📋 [deny_payout] Найден запрос {request_to_deny['id']} для user_id {request_to_deny['user_id']}"
     )
 
+    user_id = request_to_deny["user_id"]
+
     try:
-        updated = update_request_status(user_id, "rejected")
+        updated = update_request_status(payout_id, "rejected")
     except Exception as e:
         log(f"❌ Ошибка обновления статуса выплаты: {e}")
         updated = False
@@ -257,7 +260,7 @@ async def reset_payout_request(update: Update, context: ContextTypes.DEFAULT_TYP
     if pending_requests:
         for req in pending_requests:
             req["status"] = "Отменено"
-            update_request_status(req["user_id"], "cancelled")
+            update_request_status(req["id"], "cancelled")
             reset_details.append(
                 f"👤 {req['name']} (ID: {req['user_id']})\n"
                 f"Сумма: {req['amount']} ₽\n"
