@@ -26,7 +26,6 @@ def load_advance_requests() -> List[Dict[str, Any]]:
     path = _repo._file
     log(f"📂 Загрузка заявок из: {path}")
     data = _repo.load_all()
-codex/провести-техническую-диагностику-проекта
     log(f"✅ Загружено заявок: {len(data)}")
     return data
 
