@@ -8,6 +8,9 @@ from ..utils.logger import log
 
 _repo = PayoutRepository()
 
+# statuses considered pending (awaiting admin decision)
+PENDING_STATUSES = {"Ожидает", "В ожидании"}
+
 STATUS_TRANSLATIONS = {
     "approved": "Одобрено",
     "rejected": "Отклонено",
@@ -54,7 +57,7 @@ def log_new_request(
         "amount": int(amount),
         "method": payout_method,
         "payout_type": payout_type,
-        "status": "В ожидании",
+        "status": "Ожидает",
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
     _repo.create(payload)
@@ -62,12 +65,16 @@ def log_new_request(
 
 
 def check_pending_request(user_id: Any) -> bool:
-    requests = _repo.list(employee_id=user_id, status="В ожидании")
-    return len(requests) > 0
+    requests = _repo.list(employee_id=user_id)
+    return any(r.get("status") in PENDING_STATUSES for r in requests)
 
 
 def update_request_status(user_id: Any, status: str) -> bool:
-    items = _repo.list(employee_id=user_id, status="В ожидании")
+    items = [
+        r
+        for r in _repo.list(employee_id=user_id)
+        if r.get("status") in PENDING_STATUSES
+    ]
     if not items:
         log(
             f"⚠️ [update_request_status] Не найдено активных запросов для user_id {user_id}"
